@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const statusColors: Record<string, string> = {
@@ -12,6 +13,7 @@ const statusColors: Record<string, string> = {
 
 export default function InvoicesPage() {
   const supabase = createClient();
+  const router = useRouter();
   const [invoices, setInvoices] = useState<any[]>([]);
 
   const load = async () => {
@@ -51,10 +53,10 @@ export default function InvoicesPage() {
           </thead>
           <tbody>
             {invoices.map((inv) => (
-              <tr key={inv.id}>
+              <tr key={inv.id} className="cursor-pointer" onClick={() => router.push(`/invoices/${inv.id}`)}>
                 <td className="font-medium">{inv.invoice_number}</td>
                 <td>{inv.accounts?.name || "—"}</td>
-                <td>
+                <td onClick={(e) => e.stopPropagation()}>
                   <select
                     className={`badge ${statusColors[inv.status]} border-0`}
                     value={inv.status}

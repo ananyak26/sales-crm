@@ -18,6 +18,7 @@ export default function QuoteDetailPage() {
   const [company, setCompany] = useState<any>(null);
   const [sendEmail, setSendEmail] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const load = async () => {
     const { data: q } = await supabase.from("quotes").select("*").eq("id", id).single();
@@ -47,9 +48,8 @@ export default function QuoteDetailPage() {
     load();
   };
 
-  const downloadPdf = async () => {
+  const generatePdf = async () => {
     if (!printRef.current) return;
-    setDownloading(true);
     const html2canvas = (await import("html2canvas")).default;
     const { jsPDF } = await import("jspdf");
     const canvas = await html2canvas(printRef.current, { scale: 2 });
@@ -59,21 +59,28 @@ export default function QuoteDetailPage() {
     const imgHeight = (canvas.height * pageWidth) / canvas.width;
     pdf.addImage(imgData, "PNG", 0, 0, pageWidth, imgHeight);
     pdf.save(`${quote.quote_number}.pdf`);
+  };
+
+  const downloadPdf = async () => {
+    setDownloading(true);
+    await generatePdf();
     setDownloading(false);
   };
 
-  const sendQuote = () => {
+  const sendQuote = async () => {
     if (!sendEmail) {
       alert("Enter a recipient email");
       return;
     }
-    const shareUrl = `${window.location.origin}/quote/${quote.share_token}`;
+    setSending(true);
+    await generatePdf();
+    setSending(false);
+
     const subject = `Quotation ${quote.quote_number}${account?.name ? " for " + account.name : ""}`;
     const body =
       `Hi,\n\n` +
-      `Please find your quotation${account?.name ? " for " + account.name : ""} below.\n\n` +
+      `Please find attached your quotation${account?.name ? " for " + account.name : ""}.\n\n` +
       `Total: ₹${Number(quote.grand_total).toLocaleString("en-IN")}\n\n` +
-      `View it here: ${shareUrl}\n\n` +
       `Thanks!`;
 
     const gmailUrl =
@@ -83,6 +90,10 @@ export default function QuoteDetailPage() {
       `&body=${encodeURIComponent(body)}`;
 
     window.open(gmailUrl, "_blank");
+    alert(
+      `"${quote.quote_number}.pdf" was downloaded to your computer.\n\n` +
+        `In the Gmail tab that just opened, click the paperclip (attach) icon, pick that PDF from your Downloads folder, then hit Send.`
+    );
     updateStatus("Sent");
   };
 
@@ -147,23 +158,25 @@ export default function QuoteDetailPage() {
         </div>
       </div>
 
-      <div className="card p-5 flex items-center gap-3">
-        <label className="label mb-0">Status:</label>
-        <select className="input w-40" value={quote.status} onChange={(e) => updateStatus(e.target.value)}>
-          <option>Draft</option>
-          <option>Sent</option>
-          <option>Accepted</option>
-          <option>Rejected</option>
-        </select>
-        <div className="flex-1" />
+      <div className="card p-5 flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2 shrink-0">
+          <label className="label mb-0 whitespace-nowrap">Status</label>
+          <select className="input w-36" value={quote.status} onChange={(e) => updateStatus(e.target.value)}>
+            <option>Draft</option>
+            <option>Sent</option>
+            <option>Accepted</option>
+            <option>Rejected</option>
+          </select>
+        </div>
         <input
-          className="input flex-1"
+          className="input flex-1 min-w-[220px]"
+          type="email"
           placeholder="client@email.com"
           value={sendEmail}
           onChange={(e) => setSendEmail(e.target.value)}
         />
-        <button className="btn-primary" onClick={sendQuote}>
-          Send to Client
+        <button className="btn-primary shrink-0" onClick={sendQuote} disabled={sending}>
+          {sending ? "Preparing..." : "Send to Client"}
         </button>
       </div>
 

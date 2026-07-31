@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/client";
 
 const titles: Record<string, string> = {
   "/": "Dashboard",
-  "/leads": "Leads",
   "/deals": "Deals",
   "/accounts": "Accounts",
   "/products": "Products",

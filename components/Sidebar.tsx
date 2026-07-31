@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import {
   LayoutGrid,
-  Users,
   Handshake,
   Building2,
   Package,
@@ -18,7 +17,6 @@ import {
 
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutGrid },
-  { href: "/leads", label: "Leads", icon: Users },
   { href: "/deals", label: "Deals", icon: Handshake },
   { href: "/accounts", label: "Accounts", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },

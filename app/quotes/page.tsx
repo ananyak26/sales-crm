@@ -37,6 +37,13 @@ export default function QuotesPage() {
     load();
   };
 
+  const remove = async (id: string) => {
+    if (!confirm("Delete this quote? This cannot be undone.")) return;
+    await supabase.from("quote_items").delete().eq("quote_id", id);
+    await supabase.from("quotes").delete().eq("id", id);
+    load();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -57,6 +64,7 @@ export default function QuotesPage() {
               <th>Total</th>
               <th>Valid Until</th>
               <th>Created</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -80,11 +88,22 @@ export default function QuotesPage() {
                 <td>₹{Number(q.grand_total).toLocaleString("en-IN")}</td>
                 <td>{q.valid_until ? new Date(q.valid_until).toLocaleDateString() : "—"}</td>
                 <td>{new Date(q.created_at).toLocaleDateString()}</td>
+                <td className="space-x-2 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    className="text-brand-600 text-sm"
+                    onClick={() => router.push(`/quotes/${q.id}/edit`)}
+                  >
+                    Edit
+                  </button>
+                  <button className="text-red-600 text-sm" onClick={() => remove(q.id)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
             {!loading && quotes.length === 0 && (
               <tr>
-                <td colSpan={7} className="text-center text-gray-400 py-6">
+                <td colSpan={8} className="text-center text-gray-400 py-6">
                   No quotes yet — click "New Quote" to create one.
                 </td>
               </tr>

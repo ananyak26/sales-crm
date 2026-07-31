@@ -25,10 +25,12 @@ export default function QuoteDocument({
         {/* Header */}
         <div className="flex justify-between items-start p-6 border-b border-gray-300">
           <div className="flex gap-4">
-            {company?.logo_url && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={company.logo_url} alt="logo" className="w-16 h-16 object-contain" />
-            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={company?.logo_url || "/kaizen-logo.png"}
+              alt="logo"
+              className="h-16 w-auto object-contain"
+            />
             <div>
               <p className="font-bold text-base">{company?.company_name || "Your Company Name"}</p>
               <p className="text-xs leading-5 text-gray-600">

@@ -4,13 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 export default async function DashboardPage() {
   const supabase = createClient();
 
-  const [{ count: leadsCount }, { count: dealsCount }, { count: quotesCount }, { data: openDeals }] =
-    await Promise.all([
-      supabase.from("leads").select("*", { count: "exact", head: true }),
-      supabase.from("deals").select("*", { count: "exact", head: true }),
-      supabase.from("quotes").select("*", { count: "exact", head: true }),
-      supabase.from("deals").select("amount").not("stage", "in", '("Won","Lost")'),
-    ]);
+  const [{ count: dealsCount }, { count: quotesCount }, { data: openDeals }] = await Promise.all([
+    supabase.from("deals").select("*", { count: "exact", head: true }),
+    supabase.from("quotes").select("*", { count: "exact", head: true }),
+    supabase.from("deals").select("amount").not("stage", "in", '("Won","Lost")'),
+  ]);
 
   const pipelineValue = (openDeals || []).reduce((sum, d: any) => sum + Number(d.amount || 0), 0);
 
@@ -21,7 +19,6 @@ export default async function DashboardPage() {
     .limit(5);
 
   const stats = [
-    { label: "Open Leads", value: leadsCount ?? 0 },
     { label: "Active Deals", value: dealsCount ?? 0 },
     { label: "Quotes Created", value: quotesCount ?? 0 },
     { label: "Pipeline Value", value: `₹${pipelineValue.toLocaleString("en-IN")}` },
@@ -30,7 +27,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {stats.map((s) => (
           <div key={s.label} className="card p-4">
             <p className="text-sm text-gray-500">{s.label}</p>

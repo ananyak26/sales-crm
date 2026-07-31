@@ -17,7 +17,6 @@ export default function QuoteDetailPage() {
   const [contact, setContact] = useState<any>(null);
   const [company, setCompany] = useState<any>(null);
   const [sendEmail, setSendEmail] = useState("");
-  const [sending, setSending] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
   const load = async () => {
@@ -63,32 +62,28 @@ export default function QuoteDetailPage() {
     setDownloading(false);
   };
 
-  const sendQuote = async () => {
+  const sendQuote = () => {
     if (!sendEmail) {
       alert("Enter a recipient email");
       return;
     }
-    setSending(true);
     const shareUrl = `${window.location.origin}/quote/${quote.share_token}`;
-    const res = await fetch("/api/send-quote", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: sendEmail,
-        quoteNumber: quote.quote_number,
-        accountName: account?.name,
-        total: quote.grand_total,
-        shareUrl,
-      }),
-    });
-    if (res.ok) {
-      await updateStatus("Sent");
-      alert("Quote sent!");
-    } else {
-      const body = await res.json().catch(() => ({}));
-      alert("Failed to send: " + (body.error || res.statusText));
-    }
-    setSending(false);
+    const subject = `Quotation ${quote.quote_number}${account?.name ? " for " + account.name : ""}`;
+    const body =
+      `Hi,\n\n` +
+      `Please find your quotation${account?.name ? " for " + account.name : ""} below.\n\n` +
+      `Total: ₹${Number(quote.grand_total).toLocaleString("en-IN")}\n\n` +
+      `View it here: ${shareUrl}\n\n` +
+      `Thanks!`;
+
+    const gmailUrl =
+      `https://mail.google.com/mail/?view=cm&fs=1` +
+      `&to=${encodeURIComponent(sendEmail)}` +
+      `&su=${encodeURIComponent(subject)}` +
+      `&body=${encodeURIComponent(body)}`;
+
+    window.open(gmailUrl, "_blank");
+    updateStatus("Sent");
   };
 
   const convertToInvoice = async () => {
@@ -167,8 +162,8 @@ export default function QuoteDetailPage() {
           value={sendEmail}
           onChange={(e) => setSendEmail(e.target.value)}
         />
-        <button className="btn-primary" onClick={sendQuote} disabled={sending}>
-          {sending ? "Sending..." : "Send to Client"}
+        <button className="btn-primary" onClick={sendQuote}>
+          Send to Client
         </button>
       </div>
 

@@ -120,17 +120,17 @@ export default function ProductsPage() {
           </thead>
           <tbody>
             {products.map((p) => (
-              <tr key={p.id}>
+              <tr key={p.id} className="cursor-pointer" onClick={() => openEdit(p)}>
                 <td className="font-medium">{p.name}</td>
                 <td>{p.sku}</td>
                 <td>{p.hsn_sac}</td>
                 <td>₹{Number(p.price).toLocaleString("en-IN")}</td>
                 <td>{p.tax_rate}%</td>
                 <td className="space-x-2 whitespace-nowrap">
-                  <button className="text-brand-600 text-sm" onClick={() => openEdit(p)}>
+                  <button className="text-brand-600 text-sm" onClick={(e) => { e.stopPropagation(); openEdit(p); }}>
                     Edit
                   </button>
-                  <button className="text-red-600 text-sm" onClick={() => remove(p.id)}>
+                  <button className="text-red-600 text-sm" onClick={(e) => { e.stopPropagation(); remove(p.id); }}>
                     Delete
                   </button>
                 </td>

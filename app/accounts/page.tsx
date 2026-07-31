@@ -153,17 +153,17 @@ export default function AccountsPage() {
           </thead>
           <tbody>
             {accounts.map((a) => (
-              <tr key={a.id}>
+              <tr key={a.id} className="cursor-pointer" onClick={() => openEdit(a)}>
                 <td className="font-medium">{a.name}</td>
                 <td>{a.industry}</td>
                 <td>{a.gstin}</td>
                 <td>{a.state}</td>
                 <td>{a.phone}</td>
                 <td className="space-x-2 whitespace-nowrap">
-                  <button className="text-brand-600 text-sm" onClick={() => openEdit(a)}>
+                  <button className="text-brand-600 text-sm" onClick={(e) => { e.stopPropagation(); openEdit(a); }}>
                     Edit
                   </button>
-                  <button className="text-red-600 text-sm" onClick={() => remove(a.id)}>
+                  <button className="text-red-600 text-sm" onClick={(e) => { e.stopPropagation(); remove(a.id); }}>
                     Delete
                   </button>
                 </td>

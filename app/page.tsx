@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
@@ -51,12 +52,14 @@ export default async function DashboardPage() {
           </thead>
           <tbody>
             {(recentQuotes || []).map((q: any) => (
-              <tr key={q.id}>
-                <td>{q.quote_number}</td>
-                <td>{q.status}</td>
-                <td>₹{Number(q.grand_total).toLocaleString("en-IN")}</td>
-                <td>{new Date(q.created_at).toLocaleDateString()}</td>
-              </tr>
+              <Link key={q.id} href={`/quotes/${q.id}`} className="contents">
+                <tr className="cursor-pointer hover:bg-gray-50">
+                  <td>{q.quote_number}</td>
+                  <td>{q.status}</td>
+                  <td>₹{Number(q.grand_total).toLocaleString("en-IN")}</td>
+                  <td>{new Date(q.created_at).toLocaleDateString()}</td>
+                </tr>
+              </Link>
             ))}
             {(!recentQuotes || recentQuotes.length === 0) && (
               <tr>

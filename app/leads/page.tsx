@@ -141,7 +141,7 @@ export default function LeadsPage() {
           </thead>
           <tbody>
             {leads.map((l) => (
-              <tr key={l.id}>
+              <tr key={l.id} className="cursor-pointer" onClick={() => openEdit(l)}>
                 <td className="font-medium">{l.name}</td>
                 <td>{l.company}</td>
                 <td>{l.email}</td>
@@ -151,10 +151,10 @@ export default function LeadsPage() {
                 </td>
                 <td>{l.source}</td>
                 <td className="space-x-2 whitespace-nowrap">
-                  <button className="text-brand-600 text-sm" onClick={() => openEdit(l)}>
+                  <button className="text-brand-600 text-sm" onClick={(e) => { e.stopPropagation(); openEdit(l); }}>
                     Edit
                   </button>
-                  <button className="text-red-600 text-sm" onClick={() => remove(l.id)}>
+                  <button className="text-red-600 text-sm" onClick={(e) => { e.stopPropagation(); remove(l.id); }}>
                     Delete
                   </button>
                 </td>

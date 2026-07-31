@@ -40,18 +40,6 @@ export type Contact = {
   title: string | null;
 };
 
-export type Lead = {
-  id: string;
-  name: string;
-  company: string | null;
-  email: string | null;
-  phone: string | null;
-  status: "New" | "Contacted" | "Qualified" | "Lost";
-  source: string | null;
-  notes: string | null;
-  created_at: string;
-};
-
 export type Deal = {
   id: string;
   name: string;

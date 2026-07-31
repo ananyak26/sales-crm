@@ -142,7 +142,7 @@ export default function DealsPage() {
           </thead>
           <tbody>
             {deals.map((d) => (
-              <tr key={d.id}>
+              <tr key={d.id} className="cursor-pointer" onClick={() => openEdit(d)}>
                 <td className="font-medium">{d.name}</td>
                 <td>{d.accounts?.name || "—"}</td>
                 <td>
@@ -151,10 +151,10 @@ export default function DealsPage() {
                 <td>₹{Number(d.amount).toLocaleString("en-IN")}</td>
                 <td>{d.close_date ? new Date(d.close_date).toLocaleDateString() : "—"}</td>
                 <td className="space-x-2 whitespace-nowrap">
-                  <button className="text-brand-600 text-sm" onClick={() => openEdit(d)}>
+                  <button className="text-brand-600 text-sm" onClick={(e) => { e.stopPropagation(); openEdit(d); }}>
                     Edit
                   </button>
-                  <button className="text-red-600 text-sm" onClick={() => remove(d.id)}>
+                  <button className="text-red-600 text-sm" onClick={(e) => { e.stopPropagation(); remove(d.id); }}>
                     Delete
                   </button>
                 </td>

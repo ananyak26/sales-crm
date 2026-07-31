@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Modal from "@/components/Modal";
 import type { Deal, Account } from "@/lib/types";
 
 const emptyForm = { name: "", account_id: "", stage: "Prospecting", amount: 0, close_date: "" };
@@ -82,8 +83,8 @@ export default function DealsPage() {
         </button>
       </div>
 
-      {showForm && (
-        <div className="card p-5 space-y-4">
+      <Modal open={showForm} onClose={() => setShowForm(false)} title={editingId ? "Edit Deal" : "New Deal"}>
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="md:col-span-2">
               <label className="label">Deal Name *</label>
@@ -117,7 +118,7 @@ export default function DealsPage() {
               <input type="date" className="input" value={form.close_date} onChange={(e) => setForm({ ...form, close_date: e.target.value })} />
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <button className="btn-primary" onClick={save}>
               Save
             </button>
@@ -126,7 +127,7 @@ export default function DealsPage() {
             </button>
           </div>
         </div>
-      )}
+      </Modal>
 
       <div className="card p-4 overflow-x-auto">
         <table className="table-base">

@@ -68,7 +68,7 @@ export default function LoginPage() {
           </h1>
           <div className="space-y-4">
             {[
-              { icon: TrendingUp, text: "Track leads through deals to closed revenue" },
+              { icon: TrendingUp, text: "Track deals through to closed revenue" },
               { icon: FileCheck, text: "Generate GST-ready quotes in seconds" },
               { icon: ShieldCheck, text: "Row-level security keeps your data safe" },
             ].map((f, i) => (

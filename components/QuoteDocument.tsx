@@ -10,12 +10,16 @@ export default function QuoteDocument({
   account,
   contact,
   company,
+  docLabel = "Quote",
+  dueDate,
 }: {
   quote: any;
   items: any[];
   account: any;
   contact: any;
   company: any;
+  docLabel?: string;
+  dueDate?: string | null;
 }) {
   const isSplitTax = quote.tax_type === "CGST_SGST";
 
@@ -53,7 +57,7 @@ export default function QuoteDocument({
               </p>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-700">Quote</h1>
+          <h1 className="text-3xl font-bold text-gray-700">{docLabel}</h1>
         </div>
 
         {/* Meta row */}
@@ -63,9 +67,15 @@ export default function QuoteDocument({
               <span className="font-semibold"># </span>: {quote.quote_number}
             </p>
             <p>
-              <span className="font-semibold">Quote Date</span> :{" "}
+              <span className="font-semibold">{docLabel} Date</span> :{" "}
               {new Date(quote.created_at).toLocaleDateString("en-GB").replace(/\//g, "-")}
             </p>
+            {dueDate && (
+              <p>
+                <span className="font-semibold">Due Date</span> :{" "}
+                {new Date(dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")}
+              </p>
+            )}
           </div>
           <div className="p-4">
             <p>

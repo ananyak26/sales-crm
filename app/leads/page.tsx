@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Modal from "@/components/Modal";
 import type { Lead } from "@/lib/types";
 
 const emptyForm = { name: "", company: "", email: "", phone: "", status: "New", source: "", notes: "" };
@@ -79,8 +80,8 @@ export default function LeadsPage() {
         </button>
       </div>
 
-      {showForm && (
-        <div className="card p-5 space-y-4">
+      <Modal open={showForm} onClose={() => setShowForm(false)} title={editingId ? "Edit Lead" : "New Lead"}>
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="label">Name *</label>
@@ -115,7 +116,7 @@ export default function LeadsPage() {
             <label className="label">Notes</label>
             <textarea className="input" rows={2} value={form.notes || ""} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <button className="btn-primary" onClick={save}>
               Save
             </button>
@@ -124,7 +125,7 @@ export default function LeadsPage() {
             </button>
           </div>
         </div>
-      )}
+      </Modal>
 
       <div className="card p-4 overflow-x-auto">
         <table className="table-base">

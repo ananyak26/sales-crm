@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Modal from "@/components/Modal";
 import type { Account } from "@/lib/types";
 
 const emptyForm = {
@@ -87,8 +88,8 @@ export default function AccountsPage() {
         </button>
       </div>
 
-      {showForm && (
-        <div className="card p-5 space-y-4">
+      <Modal open={showForm} onClose={() => setShowForm(false)} title={editingId ? "Edit Account" : "New Account"}>
+        <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="label">Company Name *</label>
@@ -128,7 +129,7 @@ export default function AccountsPage() {
             <label className="label">Shipping Address (leave blank if same as billing)</label>
             <textarea className="input" rows={2} value={form.shipping_address || ""} onChange={(e) => setForm({ ...form, shipping_address: e.target.value })} />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-2">
             <button className="btn-primary" onClick={save}>
               Save
             </button>
@@ -137,7 +138,7 @@ export default function AccountsPage() {
             </button>
           </div>
         </div>
-      )}
+      </Modal>
 
       <div className="card p-4 overflow-x-auto">
         <table className="table-base">

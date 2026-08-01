@@ -109,3 +109,57 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   @apply bg-gray-300 rounded-full;
 }
+
+/* Login 3D scene */
+.grid-floor {
+  position: absolute;
+  inset: -20% -60% -10% -60%;
+  background-image: linear-gradient(rgba(129, 140, 248, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.16) 1px, transparent 1px);
+  background-size: 46px 46px;
+  transform: rotateX(78deg);
+  transform-origin: bottom;
+  animation: grid-drift 14s linear infinite;
+  -webkit-mask-image: linear-gradient(to top, black, transparent 82%);
+  mask-image: linear-gradient(to top, black, transparent 82%);
+}
+@keyframes grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 46px;
+  }
+}
+
+.float-card {
+  animation: float-card 7s ease-in-out infinite;
+}
+.float-card-a {
+  animation-duration: 7.5s;
+}
+.float-card-b {
+  animation-duration: 8.5s;
+  animation-delay: -2.2s;
+}
+.float-card-c {
+  animation-duration: 6.8s;
+  animation-delay: -4.5s;
+}
+@keyframes float-card {
+  0%,
+  100% {
+    transform: translate3d(var(--tx, 0), 0px, var(--tz, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  }
+  50% {
+    transform: translate3d(var(--tx, 0), -14px, var(--tz, 0px)) rotateX(calc(var(--rx, 0deg) - 2deg))
+      rotateY(calc(var(--ry, 0deg) + 2deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-floor,
+  .float-card {
+    animation: none !important;
+  }
+}

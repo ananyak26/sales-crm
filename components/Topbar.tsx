@@ -6,16 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import { Search, Plus, Bell, Settings, LogOut, FileText, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-const titles: Record<string, string> = {
-  "/": "Dashboard",
-  "/deals": "Deals",
-  "/accounts": "Accounts",
-  "/products": "Products",
-  "/quotes": "Quotes",
-  "/invoices": "Invoices",
-  "/settings": "Settings",
-};
-
 type QuoteAlert = {
   id: string;
   quote_number: string;
@@ -83,13 +73,10 @@ export default function Topbar() {
 
   if (hidden) return null;
 
-  const title = titles[pathname] || "SalesCRM";
   const initial = (email || "U").charAt(0).toUpperCase();
 
   return (
     <header className="h-16 shrink-0 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center gap-4 px-6 sticky top-0 z-10">
-      <h1 className="text-[17px] font-semibold text-ink-900 tracking-tight shrink-0">{title}</h1>
-
       <div className="flex-1 flex justify-center">
         <div className="relative w-full max-w-sm">
           <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />

@@ -4,13 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import QuoteDocument from "@/components/QuoteDocument";
+import StatusDropdown, { StatusOption } from "@/components/StatusDropdown";
 
-const statusColors: Record<string, string> = {
-  Draft: "bg-gray-200 text-gray-600",
-  Sent: "bg-blue-100 text-blue-700",
-  Paid: "bg-green-100 text-green-700",
-  Overdue: "bg-red-100 text-red-700",
-};
+const invoiceStatusOptions: StatusOption[] = [
+  { value: "Draft", tone: "gray" },
+  { value: "Sent", tone: "blue" },
+  { value: "Paid", tone: "green" },
+  { value: "Overdue", tone: "red" },
+];
 
 export default function InvoiceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -84,16 +85,11 @@ export default function InvoiceDetailPage() {
 
       <div className="card p-5 flex items-center gap-3">
         <label className="label mb-0 whitespace-nowrap">Status</label>
-        <select
-          className={`badge ${statusColors[invoice.status]} border-0`}
+        <StatusDropdown
           value={invoice.status}
-          onChange={(e) => updateStatus(e.target.value)}
-        >
-          <option>Draft</option>
-          <option>Sent</option>
-          <option>Paid</option>
-          <option>Overdue</option>
-        </select>
+          options={invoiceStatusOptions}
+          onChange={(status) => updateStatus(status)}
+        />
       </div>
 
       <div ref={printRef}>

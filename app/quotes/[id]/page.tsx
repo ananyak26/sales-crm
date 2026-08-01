@@ -4,6 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import QuoteDocument from "@/components/QuoteDocument";
+import StatusDropdown, { StatusOption } from "@/components/StatusDropdown";
+
+const quoteStatusOptions: StatusOption[] = [
+  { value: "Draft", tone: "gray" },
+  { value: "Sent", tone: "blue" },
+  { value: "Accepted", tone: "green" },
+  { value: "Rejected", tone: "red" },
+];
 
 export default function QuoteDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -161,12 +169,7 @@ export default function QuoteDetailPage() {
       <div className="card p-5 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2 shrink-0">
           <label className="label mb-0 whitespace-nowrap">Status</label>
-          <select className="input w-36" value={quote.status} onChange={(e) => updateStatus(e.target.value)}>
-            <option>Draft</option>
-            <option>Sent</option>
-            <option>Accepted</option>
-            <option>Rejected</option>
-          </select>
+          <StatusDropdown value={quote.status} options={quoteStatusOptions} onChange={(status) => updateStatus(status)} />
         </div>
         <input
           className="input flex-1 min-w-[220px]"

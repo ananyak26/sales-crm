@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import StatusDropdown, { StatusOption } from "@/components/StatusDropdown";
 
-const statusColors: Record<string, string> = {
-  Draft: "bg-gray-200 text-gray-600",
-  Sent: "bg-blue-100 text-blue-700",
-  Paid: "bg-green-100 text-green-700",
-  Overdue: "bg-red-100 text-red-700",
-};
+const invoiceStatusOptions: StatusOption[] = [
+  { value: "Draft", tone: "gray" },
+  { value: "Sent", tone: "blue" },
+  { value: "Paid", tone: "green" },
+  { value: "Overdue", tone: "red" },
+];
 
 export default function InvoicesPage() {
   const supabase = createClient();
@@ -57,16 +58,11 @@ export default function InvoicesPage() {
                 <td className="font-medium">{inv.invoice_number}</td>
                 <td>{inv.accounts?.name || "—"}</td>
                 <td onClick={(e) => e.stopPropagation()}>
-                  <select
-                    className={`badge ${statusColors[inv.status]} border-0`}
+                  <StatusDropdown
                     value={inv.status}
-                    onChange={(e) => updateStatus(inv.id, e.target.value)}
-                  >
-                    <option>Draft</option>
-                    <option>Sent</option>
-                    <option>Paid</option>
-                    <option>Overdue</option>
-                  </select>
+                    options={invoiceStatusOptions}
+                    onChange={(status) => updateStatus(inv.id, status)}
+                  />
                 </td>
                 <td>₹{Number(inv.grand_total).toLocaleString("en-IN")}</td>
                 <td>{inv.due_date ? new Date(inv.due_date).toLocaleDateString() : "—"}</td>

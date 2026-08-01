@@ -58,6 +58,7 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto">
+        <p className="px-3 pb-2 text-[10.5px] font-semibold text-ink-500 uppercase tracking-widest">Menu</p>
         {links.map((l) => {
           const active = pathname === l.href;
           const Icon = l.icon;
@@ -65,20 +66,24 @@ export default function Sidebar() {
             <Link
               key={l.href}
               href={l.href}
-              className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium transition-all ${
+              className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium transition-all duration-200 ${
                 active
                   ? "bg-white/[0.08] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)]"
-                  : "text-ink-300 hover:text-white hover:bg-white/[0.04]"
+                  : "text-ink-300 hover:text-white hover:bg-white/[0.045] hover:translate-x-0.5"
               }`}
             >
               {active && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-brand-400" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-full bg-brand-400 shadow-glow" />
               )}
-              <Icon
-                size={17}
-                strokeWidth={2}
-                className={active ? "text-brand-300" : "text-ink-400 group-hover:text-ink-200"}
-              />
+              <span
+                className={`flex items-center justify-center w-7 h-7 rounded-lg transition-colors shrink-0 ${
+                  active
+                    ? "bg-brand-500/20 text-brand-300"
+                    : "text-ink-400 group-hover:text-ink-100 group-hover:bg-white/[0.05]"
+                }`}
+              >
+                <Icon size={16} strokeWidth={2} />
+              </span>
               {l.label}
             </Link>
           );
@@ -87,13 +92,21 @@ export default function Sidebar() {
         <div className="pt-3 mt-3 border-t border-white/5">
           <Link
             href="/settings"
-            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium transition-all ${
+            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium transition-all duration-200 ${
               pathname === "/settings"
                 ? "bg-white/[0.08] text-white"
-                : "text-ink-300 hover:text-white hover:bg-white/[0.04]"
+                : "text-ink-300 hover:text-white hover:bg-white/[0.045] hover:translate-x-0.5"
             }`}
           >
-            <Settings size={17} strokeWidth={2} className="text-ink-400 group-hover:text-ink-200" />
+            <span
+              className={`flex items-center justify-center w-7 h-7 rounded-lg transition-colors shrink-0 ${
+                pathname === "/settings"
+                  ? "bg-brand-500/20 text-brand-300"
+                  : "text-ink-400 group-hover:text-ink-100 group-hover:bg-white/[0.05]"
+              }`}
+            >
+              <Settings size={16} strokeWidth={2} />
+            </span>
             Settings
           </Link>
         </div>
@@ -103,9 +116,11 @@ export default function Sidebar() {
       <div className="p-3 border-t border-white/5">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium text-ink-300 hover:text-white hover:bg-white/[0.06] transition-all"
+          className="group w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium text-ink-300 hover:text-white hover:bg-white/[0.06] transition-all duration-200"
         >
-          <LogOut size={17} strokeWidth={2} />
+          <span className="flex items-center justify-center w-7 h-7 rounded-lg text-ink-400 group-hover:text-rose-300 group-hover:bg-rose-500/10 transition-colors shrink-0">
+            <LogOut size={16} strokeWidth={2} />
+          </span>
           Log out
         </button>
       </div>

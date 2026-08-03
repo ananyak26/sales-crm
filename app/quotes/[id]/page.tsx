@@ -4,14 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import QuoteDocument from "@/components/QuoteDocument";
-import StatusDropdown, { StatusOption } from "@/components/StatusDropdown";
+import StatusSelect from "@/components/StatusSelect";
 
-const quoteStatusOptions: StatusOption[] = [
-  { value: "Draft", tone: "gray" },
-  { value: "Sent", tone: "blue" },
-  { value: "Accepted", tone: "green" },
-  { value: "Rejected", tone: "red" },
-];
+const statusColors: Record<string, string> = {
+  Draft: "bg-gray-100 text-gray-600 border-gray-200",
+  Sent: "bg-blue-50 text-blue-700 border-blue-200",
+  Accepted: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Rejected: "bg-rose-50 text-rose-700 border-rose-200",
+};
+const statusOptions = ["Draft", "Sent", "Accepted", "Rejected"];
 
 export default function QuoteDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -169,7 +170,7 @@ export default function QuoteDetailPage() {
       <div className="card p-5 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-2 shrink-0">
           <label className="label mb-0 whitespace-nowrap">Status</label>
-          <StatusDropdown value={quote.status} options={quoteStatusOptions} onChange={(status) => updateStatus(status)} />
+          <StatusSelect value={quote.status} onChange={updateStatus} options={statusOptions} colorMap={statusColors} />
         </div>
         <input
           className="input flex-1 min-w-[220px]"

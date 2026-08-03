@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
-import Topbar from "@/components/Topbar";
+import AppShell from "@/components/AppShell";
 import SessionGuard from "@/components/SessionGuard";
-import MainShell from "@/components/MainShell";
 
 export const metadata: Metadata = {
   title: "Sales CRM",
@@ -15,13 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <SessionGuard />
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <div className="flex-1 flex flex-col min-w-0">
-            <Topbar />
-            <MainShell>{children}</MainShell>
-          </div>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

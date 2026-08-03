@@ -110,50 +110,122 @@ body {
   @apply bg-gray-300 rounded-full;
 }
 
-/* Login background — restrained, monochrome, slow */
-.aurora-blob-slow {
+/* Login page: animated blueprint grid, laser scan sweep, tracing paths */
+.blueprint-grid {
   position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  animation: aurora-drift-slow 26s ease-in-out infinite;
+  inset: -10%;
+  background-image: linear-gradient(rgba(129, 140, 248, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(129, 140, 248, 0.09) 1px, transparent 1px);
+  background-size: 44px 44px;
+  animation: grid-drift-flat 16s linear infinite;
 }
-@keyframes aurora-drift-slow {
-  0%,
+@keyframes grid-drift-flat {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 44px 44px;
+  }
+}
+
+.scan-beam {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  height: 220px;
+  background: linear-gradient(180deg, transparent, rgba(129, 140, 248, 0.16), transparent);
+  animation: scan-sweep 9s ease-in-out infinite;
+}
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-260px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
   100% {
-    transform: translate(0, 0) scale(1);
+    transform: translateY(115vh);
+    opacity: 0;
+  }
+}
+
+.trace-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trace-draw 9s ease-in-out infinite;
+}
+@keyframes trace-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
   }
   50% {
-    transform: translate(30px, -22px) scale(1.08);
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .aurora-blob-slow {
-    animation: none !important;
+.reticle-pulse {
+  animation: reticle-pulse 3.2s ease-in-out infinite;
+}
+@keyframes reticle-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
   }
 }
 
-/* Grain texture overlay for a richer, less "flat" background */
-.noise-overlay {
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Entrance animation */
 @keyframes fade-in-up {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-.fade-in-up {
-  animation: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-fade-in-left {
+  animation: fade-in-left 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blueprint-grid,
+  .scan-beam,
+  .trace-path,
+  .reticle-pulse {
+    animation: none !important;
+  }
 }

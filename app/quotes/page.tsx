@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import StatusDropdown, { StatusOption } from "@/components/StatusDropdown";
+import StatusSelect from "@/components/StatusSelect";
 
-const quoteStatusOptions: StatusOption[] = [
-  { value: "Draft", tone: "gray" },
-  { value: "Sent", tone: "blue" },
-  { value: "Accepted", tone: "green" },
-  { value: "Rejected", tone: "red" },
-];
+const statusColors: Record<string, string> = {
+  Draft: "bg-gray-100 text-gray-600 border-gray-200",
+  Sent: "bg-blue-50 text-blue-700 border-blue-200",
+  Accepted: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Rejected: "bg-rose-50 text-rose-700 border-rose-200",
+};
+const statusOptions = ["Draft", "Sent", "Accepted", "Rejected"];
 
 export default function QuotesPage() {
   const supabase = createClient();
@@ -75,10 +76,11 @@ export default function QuotesPage() {
                 <td>{q.accounts?.name || "—"}</td>
                 <td>{q.subject || "—"}</td>
                 <td onClick={(e) => e.stopPropagation()}>
-                  <StatusDropdown
+                  <StatusSelect
                     value={q.status}
-                    options={quoteStatusOptions}
                     onChange={(status) => updateStatus(q.id, status)}
+                    options={statusOptions}
+                    colorMap={statusColors}
                   />
                 </td>
                 <td>₹{Number(q.grand_total).toLocaleString("en-IN")}</td>

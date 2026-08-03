@@ -45,9 +45,9 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 shrink-0 bg-ink-gradient min-h-screen flex flex-col text-ink-200">
+    <aside className="w-64 shrink-0 sticky top-0 h-screen bg-ink-gradient flex flex-col text-ink-200 overflow-hidden">
       {/* Brand */}
-      <div className="px-5 h-16 flex items-center gap-2.5 border-b border-white/5">
+      <div className="px-5 h-16 flex items-center gap-2.5 border-b border-white/5 shrink-0">
         <div className="w-8 h-8 rounded-lg bg-brand-gradient flex items-center justify-center shadow-glow shrink-0">
           <Sparkles size={16} className="text-white" strokeWidth={2.5} />
         </div>
@@ -113,7 +113,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer / account */}
-      <div className="p-3 border-t border-white/5">
+      <div className="p-3 border-t border-white/5 shrink-0">
         <button
           onClick={handleLogout}
           className="group w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium text-ink-300 hover:text-white hover:bg-white/[0.06] transition-all duration-200"

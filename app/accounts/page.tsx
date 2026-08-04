@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Modal from "@/components/Modal";
+import { useUserRole } from "@/lib/useUserRole";
 import type { Account } from "@/lib/types";
 
 const emptyForm = {
@@ -27,13 +28,17 @@ const INDIAN_STATES = [
 
 export default function AccountsPage() {
   const supabase = createClient();
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const { isBoss } = useUserRole();
+  const [accounts, setAccounts] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<any>(emptyForm);
 
   const load = async () => {
-    const { data, error } = await supabase.from("accounts").select("*").order("created_at", { ascending: false });
+    const { data, error } = await supabase
+      .from("accounts")
+      .select("*, owner:profiles!accounts_created_by_fkey(full_name, email)")
+      .order("created_at", { ascending: false });
     if (error) console.error("Load accounts failed:", error);
     setAccounts(data || []);
   };
@@ -78,6 +83,30 @@ export default function AccountsPage() {
     await supabase.from("accounts").delete().eq("id", id);
     load();
   };
+
+  // Boss only: the same client can get added independently by more than one
+  // rep (each rep only sees their own accounts, so they can't tell it's a
+  // duplicate). Group by name here so the boss sees it once, with all the
+  // reps who have their own copy of it listed under Owner. Editing/deleting
+  // acts on the most recently created copy — the other rep's copy is
+  // untouched, since it's still their own separate row underneath.
+  const displayRows = isBoss
+    ? Array.from(
+        accounts
+          .reduce((groups, a) => {
+            const key = (a.name || "").trim().toLowerCase();
+            const existing = groups.get(key);
+            if (!existing) {
+              groups.set(key, { ...a, owners: a.owner ? [a.owner] : [], duplicateCount: 1 });
+            } else {
+              existing.duplicateCount += 1;
+              if (a.owner) existing.owners.push(a.owner);
+            }
+            return groups;
+          }, new Map<string, any>())
+          .values()
+      )
+    : accounts.map((a) => ({ ...a, owners: a.owner ? [a.owner] : [], duplicateCount: 1 }));
 
   return (
     <div className="space-y-6">
@@ -146,6 +175,7 @@ export default function AccountsPage() {
             <tr>
               <th>Name</th>
               <th>Industry</th>
+              {isBoss && <th>Owner</th>}
               <th>GSTIN</th>
               <th>State</th>
               <th>Phone</th>
@@ -153,10 +183,18 @@ export default function AccountsPage() {
             </tr>
           </thead>
           <tbody>
-            {accounts.map((a) => (
+            {displayRows.map((a) => (
               <tr key={a.id} className="cursor-pointer" onClick={() => openEdit(a)}>
                 <td className="font-medium">{a.name}</td>
                 <td>{a.industry}</td>
+                {isBoss && (
+                  <td>
+                    {a.owners.map((o: any) => o.full_name || o.email).join(", ") || "—"}
+                    {a.duplicateCount > 1 && (
+                      <span className="ml-1 text-xs text-gray-400">({a.duplicateCount} reps)</span>
+                    )}
+                  </td>
+                )}
                 <td>{a.gstin}</td>
                 <td>{a.state}</td>
                 <td>{a.phone}</td>
@@ -170,9 +208,9 @@ export default function AccountsPage() {
                 </td>
               </tr>
             ))}
-            {accounts.length === 0 && (
+            {displayRows.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center text-gray-400 py-6">
+                <td colSpan={isBoss ? 7 : 6} className="text-center text-gray-400 py-6">
                   No accounts yet.
                 </td>
               </tr>

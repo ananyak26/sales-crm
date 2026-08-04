@@ -78,7 +78,7 @@ export default async function DashboardPage() {
     { label: "Active Deals", value: dealsList.length, sub: `${openDeals.length} open` },
     { label: "Quotes Created", value: quotesList.length, sub: `${acceptedQuotes} accepted` },
     { label: "Pipeline Value", value: `₹${pipelineValue.toLocaleString("en-IN")}`, sub: "open deals" },
-    { label: "Revenue Collected", value: `₹${revenueCollected.toLocaleString("en-IN")}`, sub: "paid invoices" },
+    { label: "Revenue Collected", value: `₹${revenueCollected.toLocaleString("en-IN")}`, sub: "paid sales order" },
   ];
 
   return (

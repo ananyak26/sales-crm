@@ -2,8 +2,7 @@
 // POST-only. Lets the boss reset a specific employee's password.
 
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabaseAdmin'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 export async function POST(
   request: Request,

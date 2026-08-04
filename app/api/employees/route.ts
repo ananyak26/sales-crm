@@ -3,8 +3,7 @@
 // a new employee, without needing a real email address.
 
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabaseAdmin'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 
 const EMAIL_DOMAIN = 'crm.internal' // fake domain, just satisfies Supabase Auth's email field
 
@@ -44,7 +43,7 @@ export async function POST(request: Request) {
   const cleanUsername = String(username).trim().toLowerCase().replace(/\s+/g, '')
   const email = `${cleanUsername}@${EMAIL_DOMAIN}`
 
-  const admin = createAdminClient()
+  const admin = createAdminClient() // no args needed — reads env vars internally
 
   const { data: created, error } = await admin.auth.admin.createUser({
     email,

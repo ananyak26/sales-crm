@@ -195,7 +195,7 @@ export default function Topbar() {
                 (e.target as HTMLInputElement).blur();
               }
             }}
-            placeholder="Search accounts, deals, quotes, invoices..."
+            placeholder="Search accounts, deals, quotes, sales order..."
             className="w-full rounded-full border border-gray-200 bg-gray-50 pl-10 pr-9 py-2 text-sm
               placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-brand-400 focus:ring-4 focus:ring-brand-500/10 transition-all"
           />
@@ -280,7 +280,7 @@ export default function Topbar() {
               {!searching && results.invoices.length > 0 && (
                 <div className="mb-1">
                   <div className="px-4 py-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
-                    Invoices
+                    Sales Order
                   </div>
                   {results.invoices.map((inv) => (
                     <button

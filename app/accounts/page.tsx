@@ -15,7 +15,37 @@ const emptyForm = {
   shipping_address: "",
   gstin: "",
   state: "",
+  primary_contact_name: "",
+  gst_registration_type: "",
+  payment_terms: "",
 };
+
+const GST_REGISTRATION_TYPES = [
+  "Registered Business - Regular",
+  "Registered Business - Composition",
+  "Unregistered Business",
+  "Consumer",
+  "Overseas",
+  "Special Economic Zone",
+  "Deemed Export",
+  "Tax Deductor",
+  "SEZ Developer",
+];
+
+const PAYMENT_TERM_PRESETS = [
+  "Due on receipt",
+  "Net 15",
+  "Net 30",
+  "Net 45",
+  "Net 60",
+  "Advance",
+  "Payment After Delivery",
+  "50% Advance, 50% Against the Delivery",
+  "30% Advance, 60% Before Dispatch, 10% After Installation",
+  "60% Advance with PO/PI, 40% Against PI & Balance After Commissioning",
+  "30% Along with PO, 40% Against PI, 30% After Installation",
+  "20% Advance + 65% Against PI + 15% After Installation",
+];
 
 const INDIAN_STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
@@ -149,6 +179,43 @@ export default function AccountsPage() {
                 ))}
               </select>
             </div>
+            <div>
+              <label className="label">Primary Contact</label>
+              <input
+                className="input"
+                placeholder="Name of person you deal with"
+                value={form.primary_contact_name || ""}
+                onChange={(e) => setForm({ ...form, primary_contact_name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="label">GST Registration Type</label>
+              <select
+                className="input"
+                value={form.gst_registration_type || ""}
+                onChange={(e) => setForm({ ...form, gst_registration_type: e.target.value })}
+              >
+                <option value="">Select type</option>
+                {GST_REGISTRATION_TYPES.map((t) => (
+                  <option key={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="label">Payment Terms</label>
+              <input
+                className="input"
+                list="payment-term-presets"
+                placeholder="Pick a preset or type a custom term"
+                value={form.payment_terms || ""}
+                onChange={(e) => setForm({ ...form, payment_terms: e.target.value })}
+              />
+              <datalist id="payment-term-presets">
+                {PAYMENT_TERM_PRESETS.map((t) => (
+                  <option key={t} value={t} />
+                ))}
+              </datalist>
+            </div>
           </div>
           <div>
             <label className="label">Billing Address</label>
@@ -174,9 +241,11 @@ export default function AccountsPage() {
           <thead>
             <tr>
               <th>Name</th>
+              <th>Primary Contact</th>
               <th>Industry</th>
               {isBoss && <th>Owner</th>}
               <th>GSTIN</th>
+              <th>Payment Terms</th>
               <th>State</th>
               <th>Phone</th>
               <th></th>
@@ -186,6 +255,7 @@ export default function AccountsPage() {
             {displayRows.map((a) => (
               <tr key={a.id} className="cursor-pointer" onClick={() => openEdit(a)}>
                 <td className="font-medium">{a.name}</td>
+                <td>{a.primary_contact_name || "—"}</td>
                 <td>{a.industry}</td>
                 {isBoss && (
                   <td>
@@ -196,6 +266,7 @@ export default function AccountsPage() {
                   </td>
                 )}
                 <td>{a.gstin}</td>
+                <td>{a.payment_terms || "—"}</td>
                 <td>{a.state}</td>
                 <td>{a.phone}</td>
                 <td className="space-x-2 whitespace-nowrap">
@@ -210,7 +281,7 @@ export default function AccountsPage() {
             ))}
             {displayRows.length === 0 && (
               <tr>
-                <td colSpan={isBoss ? 7 : 6} className="text-center text-gray-400 py-6">
+                <td colSpan={isBoss ? 9 : 8} className="text-center text-gray-400 py-6">
                   No accounts yet.
                 </td>
               </tr>

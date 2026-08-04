@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Modal from "@/components/Modal";
 import type { Product } from "@/lib/types";
 
-const emptyForm = { name: "", sku: "", price: 0, tax_rate: 18, description: "", hsn_sac: "", unit: "Nos" };
+const emptyForm = { name: "", sku: "", price: 0, tax_rate: 18, description: "", hsn_sac: "", unit: "Nos", image_url: "" };
 
 export default function ProductsPage() {
   const supabase = createClient();
@@ -13,6 +13,8 @@ export default function ProductsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<any>(emptyForm);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     const { data } = await supabase.from("products").select("*").order("name");
@@ -53,6 +55,20 @@ export default function ProductsPage() {
     if (!confirm("Delete this product?")) return;
     await supabase.from("products").delete().eq("id", id);
     load();
+  };
+
+  const uploadImage = async (file: File) => {
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(path, file);
+    setUploading(false);
+    if (error) {
+      alert(`Image upload failed: ${error.message}`);
+      return;
+    }
+    const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+    setForm((f: any) => ({ ...f, image_url: data.publicUrl }));
   };
 
   return (
@@ -96,6 +112,39 @@ export default function ProductsPage() {
             <label className="label">Description</label>
             <textarea className="input" rows={2} value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </div>
+          <div>
+            <label className="label">Product Image</label>
+            <div className="flex items-center gap-3">
+              {form.image_url ? (
+                <img src={form.image_url} alt="" className="h-16 w-16 rounded-lg object-cover border border-gray-200" />
+              ) : (
+                <div className="h-16 w-16 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400">
+                  No image
+                </div>
+              )}
+              <div className="flex flex-col gap-1">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0])}
+                />
+                <button type="button" className="btn-secondary btn-sm" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                  {uploading ? "Uploading…" : form.image_url ? "Replace image" : "Upload image"}
+                </button>
+                {form.image_url && (
+                  <button
+                    type="button"
+                    className="text-xs text-red-600 text-left"
+                    onClick={() => setForm((f: any) => ({ ...f, image_url: "" }))}
+                  >
+                    Remove image
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="flex gap-2 pt-2">
             <button className="btn-primary" onClick={save}>
               Save
@@ -111,6 +160,7 @@ export default function ProductsPage() {
         <table className="table-base">
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
               <th>SKU</th>
               <th>HSN/SAC</th>
@@ -120,8 +170,15 @@ export default function ProductsPage() {
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
+            {products.map((p: any) => (
               <tr key={p.id} className="cursor-pointer" onClick={() => openEdit(p)}>
+                <td>
+                  {p.image_url ? (
+                    <img src={p.image_url} alt="" className="h-10 w-10 rounded-md object-cover border border-gray-200" />
+                  ) : (
+                    <div className="h-10 w-10 rounded-md border border-dashed border-gray-200" />
+                  )}
+                </td>
                 <td className="font-medium">{p.name}</td>
                 <td>{p.sku}</td>
                 <td>{p.hsn_sac}</td>
@@ -139,7 +196,7 @@ export default function ProductsPage() {
             ))}
             {products.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center text-gray-400 py-6">
+                <td colSpan={7} className="text-center text-gray-400 py-6">
                   No products yet — add items to your price book.
                 </td>
               </tr>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
   LayoutGrid,
@@ -13,9 +14,11 @@ import {
   Settings,
   LogOut,
   Sparkles,
+  BarChart3,
+  Users,
 } from "lucide-react";
 
-const links = [
+const salesLinks = [
   { href: "/", label: "Dashboard", icon: LayoutGrid },
   { href: "/deals", label: "Deals", icon: Handshake },
   { href: "/accounts", label: "Accounts", icon: Building2 },
@@ -24,9 +27,31 @@ const links = [
   { href: "/invoices", label: "Sales Order", icon: Receipt },
 ];
 
+const bossLinks = [
+  { href: "/", label: "Dashboard", icon: LayoutGrid },
+  { href: "/reports", label: "Reports", icon: BarChart3 },
+  { href: "/accounts", label: "Accounts", icon: Building2 },
+  { href: "/products", label: "Products", icon: Package },
+  { href: "/quotes", label: "Quotes", icon: FileText },
+  { href: "/invoices", label: "Sales Order", icon: Receipt },
+  { href: "/boss/employees", label: "Employees", icon: Users },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [role, setRole] = useState<"sales" | "boss">("sales");
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single();
+      if (profile?.role === "boss") setRole("boss");
+    });
+  }, []);
+
+  const links = role === "boss" ? bossLinks : salesLinks;
 
   const hideOn = ["/login"];
   if (

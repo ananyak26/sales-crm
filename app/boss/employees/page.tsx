@@ -18,15 +18,14 @@ export default async function EmployeesPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Employees</h1>
-        <p className="text-sm text-slate-500">
-          Create a username and password for a new rep, or reset an existing
-          one — no email address needed.
+        <h1 className="text-2xl font-bold text-ink-900">Employees</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Create a username and password for a new rep, or reset an existing one — no email address needed.
         </p>
       </div>
       <EmployeesPanel initialEmployees={employees ?? []} />
     </div>
-  )
+  );
 }

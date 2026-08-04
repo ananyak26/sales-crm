@@ -121,7 +121,7 @@ export default function DashboardCharts({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         <div className="card p-5 lg:col-span-3">
           <h2 className="font-semibold text-ink-900 mb-0.5">Revenue Collected</h2>
-          <p className="text-xs text-gray-400 mb-2">Paid invoices, last 6 months</p>
+          <p className="text-xs text-gray-400 mb-2">Paid Sales Orders, last 6 months</p>
           <AreaChart data={revenueTrend} mounted={mounted} />
         </div>
 

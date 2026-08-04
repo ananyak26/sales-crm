@@ -21,7 +21,7 @@ const links = [
   { href: "/accounts", label: "Accounts", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },
   { href: "/quotes", label: "Quotes", icon: FileText },
-  { href: "/invoices", label: "Invoices", icon: Receipt },
+  { href: "/sales order", label: "Sales Order", icon: Receipt },
 ];
 
 export default function Sidebar() {

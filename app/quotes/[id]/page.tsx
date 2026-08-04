@@ -162,7 +162,7 @@ export default function QuoteDetailPage() {
             {downloading ? "Generating..." : "Download PDF"}
           </button>
           <button className="btn-primary" onClick={convertToInvoice}>
-            Convert to Invoice
+            Convert to Sales Order
           </button>
         </div>
       </div>

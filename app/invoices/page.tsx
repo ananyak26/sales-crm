@@ -37,16 +37,16 @@ export default function InvoicesPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Invoices</h1>
+      <h1 className="text-2xl font-bold">Sales Order</h1>
       <p className="text-sm text-gray-500">
-        Invoices are created by converting an accepted quote. Go to a quote and click "Convert to Invoice".
+        Sales Order are created by converting an accepted quote. Go to a quote and click "Convert to Sales Order".
       </p>
 
       <div className="card p-4 overflow-x-auto">
         <table className="table-base">
           <thead>
             <tr>
-              <th>Invoice #</th>
+              <th>Sales Order #</th>
               <th>Account</th>
               <th>Status</th>
               <th>Total</th>
@@ -73,7 +73,7 @@ export default function InvoicesPage() {
             {invoices.length === 0 && (
               <tr>
                 <td colSpan={5} className="text-center text-gray-400 py-6">
-                  No invoices yet.
+                  No Sales Order yet.
                 </td>
               </tr>
             )}

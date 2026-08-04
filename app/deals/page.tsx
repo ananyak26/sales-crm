@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Modal from "@/components/Modal";
+import { useUserRole } from "@/lib/useUserRole";
 import type { Deal, Account } from "@/lib/types";
 
 const emptyForm = { name: "", account_id: "", stage: "Prospecting", amount: 0, close_date: "" };
@@ -16,6 +17,7 @@ const stageColors: Record<string, string> = {
 
 export default function DealsPage() {
   const supabase = createClient();
+  const { isBoss } = useUserRole();
   const [deals, setDeals] = useState<any[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -25,7 +27,7 @@ export default function DealsPage() {
   const load = async () => {
     const { data } = await supabase
       .from("deals")
-      .select("*, accounts(name)")
+      .select("*, accounts(name), owner:profiles!deals_created_by_fkey(full_name, email)")
       .order("created_at", { ascending: false });
     setDeals(data || []);
     const { data: accs } = await supabase.from("accounts").select("*").order("name");
@@ -135,6 +137,7 @@ export default function DealsPage() {
             <tr>
               <th>Deal</th>
               <th>Account</th>
+              {isBoss && <th>Owner</th>}
               <th>Stage</th>
               <th>Amount</th>
               <th>Close Date</th>
@@ -146,6 +149,7 @@ export default function DealsPage() {
               <tr key={d.id} className="cursor-pointer" onClick={() => openEdit(d)}>
                 <td className="font-medium">{d.name}</td>
                 <td>{d.accounts?.name || "—"}</td>
+                {isBoss && <td>{d.owner?.full_name || d.owner?.email || "—"}</td>}
                 <td>
                   <span className={`badge ${stageColors[d.stage]}`}>{d.stage}</span>
                 </td>
@@ -163,7 +167,7 @@ export default function DealsPage() {
             ))}
             {deals.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center text-gray-400 py-6">
+                <td colSpan={isBoss ? 7 : 6} className="text-center text-gray-400 py-6">
                   No deals yet.
                 </td>
               </tr>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import StatusSelect from "@/components/StatusSelect";
+import { useUserRole } from "@/lib/useUserRole";
 
 const statusColors: Record<string, string> = {
   Draft: "bg-gray-100 text-gray-600 border-gray-200",
@@ -16,12 +17,13 @@ const statusOptions = ["Draft", "Sent", "Paid", "Overdue"];
 export default function InvoicesPage() {
   const supabase = createClient();
   const router = useRouter();
+  const { isBoss } = useUserRole();
   const [invoices, setInvoices] = useState<any[]>([]);
 
   const load = async () => {
     const { data } = await supabase
       .from("invoices")
-      .select("*, accounts(name)")
+      .select("*, accounts(name), owner:profiles!invoices_created_by_fkey(full_name, email)")
       .order("created_at", { ascending: false });
     setInvoices(data || []);
   };
@@ -48,6 +50,7 @@ export default function InvoicesPage() {
             <tr>
               <th>Sales Order #</th>
               <th>Account</th>
+              {isBoss && <th>Owner</th>}
               <th>Status</th>
               <th>Total</th>
               <th>Due Date</th>
@@ -58,6 +61,7 @@ export default function InvoicesPage() {
               <tr key={inv.id} className="cursor-pointer" onClick={() => router.push(`/invoices/${inv.id}`)}>
                 <td className="font-medium">{inv.invoice_number}</td>
                 <td>{inv.accounts?.name || "—"}</td>
+                {isBoss && <td>{inv.owner?.full_name || inv.owner?.email || "—"}</td>}
                 <td onClick={(e) => e.stopPropagation()}>
                   <StatusSelect
                     value={inv.status}
@@ -72,7 +76,7 @@ export default function InvoicesPage() {
             ))}
             {invoices.length === 0 && (
               <tr>
-                <td colSpan={5} className="text-center text-gray-400 py-6">
+                <td colSpan={isBoss ? 6 : 5} className="text-center text-gray-400 py-6">
                   No Sales Orders yet.
                 </td>
               </tr>

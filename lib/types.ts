@@ -61,6 +61,7 @@ export type Product = {
   description: string | null;
   hsn_sac: string | null;
   unit: string | null;
+  image_url?: string | null;
 };
 
 export type QuoteItem = {
@@ -68,6 +69,8 @@ export type QuoteItem = {
   quote_id?: string;
   product_id: string | null;
   description: string;
+  product_description?: string | null;
+  image_url?: string | null;
   hsn_sac?: string | null;
   unit?: string | null;
   quantity: number;
@@ -103,6 +106,8 @@ export type InvoiceItem = {
   invoice_id?: string;
   product_id: string | null;
   description: string;
+  product_description?: string | null;
+  image_url?: string | null;
   quantity: number;
   unit_price: number;
   tax_rate: number;

@@ -140,6 +140,8 @@ export default function QuoteDetailPage() {
       invoice_id: invoice.id,
       product_id: i.product_id,
       description: i.description,
+      product_description: i.product_description || null,
+      image_url: i.image_url || null,
       hsn_sac: i.hsn_sac,
       unit: i.unit,
       quantity: i.quantity,

@@ -44,6 +44,7 @@ export default function QuoteDocument({
               <img
                 src={company?.logo_url || "/kaizen-logo.png"}
                 alt="logo"
+                crossOrigin="anonymous"
                 className="h-28 w-auto max-w-[220px] object-contain bg-white rounded-xl p-2 shrink-0 shadow-soft self-stretch"
               />
               <div>
@@ -163,6 +164,7 @@ export default function QuoteDocument({
                         <img
                           src={it.image_url}
                           alt=""
+                          crossOrigin="anonymous"
                           className="w-24 min-h-24 max-h-40 self-stretch object-cover rounded-lg border border-gray-200 shrink-0"
                         />
                       ) : null}

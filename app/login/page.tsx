@@ -6,10 +6,10 @@
 //
 // Visual design is grounded in the actual brand (Kaizen Laser &
 // Automation — see /public/kaizen-logo.png): a precision-engineering,
-// laser-cutting motif in the company's own black/amber palette, rather
-// than a generic dark sci-fi grid. The signature element is a small
-// technical drawing of a mounting bracket that gets "cut" by a traveling
-// laser beam on a loop — literal to what the company makes.
+// laser-cutting motif, rendered in a single blue accent (main + light
+// tint) rather than a generic dark sci-fi grid. The signature element
+// is a small technical drawing of a mounting bracket that gets "cut" by
+// a traveling laser beam on a loop — literal to what the company makes.
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -79,7 +79,7 @@ export default function LoginPage() {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0b0c0e] px-4 py-10">
       {/* Base ambient glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(247,146,28,0.08)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(99,102,241,0.08)_0%,transparent_70%)]" />
 
       {/* Faint static machined-steel grid — no motion, kept quiet on purpose */}
       <div
@@ -105,7 +105,7 @@ export default function LoginPage() {
         </defs>
 
         {/* section hatching (material cross-section, engineering-drawing convention) */}
-        <g clipPath="url(#bracketClip)" stroke="#f7921c" strokeWidth="1" opacity="0.1">
+        <g clipPath="url(#bracketClip)" stroke="#6366f1" strokeWidth="1" opacity="0.1">
           {hatchLines.map((l, i) => (
             <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
           ))}
@@ -114,7 +114,7 @@ export default function LoginPage() {
         {/* base outline, always faintly visible */}
         <path
           d="M70,100 L300,100 L300,190 L230,190 L230,400 L70,400 Z"
-          stroke="#f8dfc1"
+          stroke="#a5aeff"
           strokeWidth="1.25"
           opacity="0.28"
         />
@@ -124,7 +124,7 @@ export default function LoginPage() {
           id="kzBracketPath"
           className="kz-trace"
           d="M70,100 L300,100 L300,190 L230,190 L230,400 L70,400 Z"
-          stroke="#f7921c"
+          stroke="#6366f1"
           strokeWidth="2"
           pathLength={1}
           strokeLinecap="round"
@@ -137,26 +137,26 @@ export default function LoginPage() {
           [120, 250],
           [120, 350],
         ].map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r="9" stroke="#f8dfc1" strokeWidth="1" opacity="0.3" />
+          <circle key={i} cx={cx} cy={cy} r="9" stroke="#a5aeff" strokeWidth="1" opacity="0.3" />
         ))}
 
         {/* dimension line */}
-        <line x1="70" y1="70" x2="300" y2="70" stroke="#f8dfc1" strokeWidth="1" opacity="0.28" />
-        <line x1="70" y1="64" x2="70" y2="76" stroke="#f8dfc1" strokeWidth="1" opacity="0.28" />
-        <line x1="300" y1="64" x2="300" y2="76" stroke="#f8dfc1" strokeWidth="1" opacity="0.28" />
-        <text x="164" y="56" fill="#f8dfc1" opacity="0.35" fontSize="11" fontFamily="monospace">
+        <line x1="70" y1="70" x2="300" y2="70" stroke="#a5aeff" strokeWidth="1" opacity="0.28" />
+        <line x1="70" y1="64" x2="70" y2="76" stroke="#a5aeff" strokeWidth="1" opacity="0.28" />
+        <line x1="300" y1="64" x2="300" y2="76" stroke="#a5aeff" strokeWidth="1" opacity="0.28" />
+        <text x="164" y="56" fill="#a5aeff" opacity="0.35" fontSize="11" fontFamily="monospace">
           230mm
         </text>
 
         {/* registration / alignment crosshairs, a real laser-cutting convention */}
-        <g stroke="#f7921c" strokeWidth="1" opacity="0.3">
+        <g stroke="#6366f1" strokeWidth="1" opacity="0.3">
           <line x1="382" y1="76" x2="382" y2="100" />
           <line x1="370" y1="88" x2="394" y2="88" />
           <circle cx="382" cy="88" r="7" />
         </g>
 
         {/* the moving cutting head, following the same path */}
-        <circle r="3.2" fill="#f7921c">
+        <circle r="3.2" fill="#6366f1">
           <animateMotion dur="9s" repeatCount="indefinite" keyPoints="0;1;1;1" keyTimes="0;0.5;0.78;1" calcMode="linear">
             <mpath href="#kzBracketPath" />
           </animateMotion>
@@ -168,7 +168,7 @@ export default function LoginPage() {
             repeatCount="indefinite"
           />
         </circle>
-        <circle r="8" fill="#f7921c" opacity="0.25">
+        <circle r="8" fill="#6366f1" opacity="0.25">
           <animateMotion dur="9s" repeatCount="indefinite" keyPoints="0;1;1;1" keyTimes="0;0.5;0.78;1" calcMode="linear">
             <mpath href="#kzBracketPath" />
           </animateMotion>
@@ -189,20 +189,20 @@ export default function LoginPage() {
         >
           <span>Kaizen Ops / Sales Console</span>
           <span className="flex items-center gap-1.5">
-            <span className="kz-pulse h-1.5 w-1.5 rounded-full bg-[#f7921c]" />
+            <span className="kz-pulse h-1.5 w-1.5 rounded-full bg-[#6366f1]" />
             secure link
           </span>
         </div>
 
         <div className="kz-fade-up relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.015] p-8 shadow-[0_2px_6px_rgba(0,0,0,0.35),0_28px_64px_-20px_rgba(0,0,0,0.65)] backdrop-blur-xl">
           {/* corner registration ticks, echoing the laser-cutting motif */}
-          <span className="pointer-events-none absolute -left-px -top-px h-3 w-3 rounded-tl-2xl border-l border-t border-[#f7921c]/50" />
-          <span className="pointer-events-none absolute -right-px -top-px h-3 w-3 rounded-tr-2xl border-r border-t border-[#f7921c]/50" />
-          <span className="pointer-events-none absolute -bottom-px -left-px h-3 w-3 rounded-bl-2xl border-b border-l border-[#f7921c]/50" />
-          <span className="pointer-events-none absolute -bottom-px -right-px h-3 w-3 rounded-br-2xl border-b border-r border-[#f7921c]/50" />
+          <span className="pointer-events-none absolute -left-px -top-px h-3 w-3 rounded-tl-2xl border-l border-t border-[#6366f1]/50" />
+          <span className="pointer-events-none absolute -right-px -top-px h-3 w-3 rounded-tr-2xl border-r border-t border-[#6366f1]/50" />
+          <span className="pointer-events-none absolute -bottom-px -left-px h-3 w-3 rounded-bl-2xl border-b border-l border-[#6366f1]/50" />
+          <span className="pointer-events-none absolute -bottom-px -right-px h-3 w-3 rounded-br-2xl border-b border-r border-[#6366f1]/50" />
 
           {/* top accent line, like a machine status strip */}
-          <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#f7921c]/70 to-transparent" />
+          <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#6366f1]/70 to-transparent" />
 
           <div className="mb-7 flex items-center gap-3.5">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/95 p-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
@@ -214,7 +214,7 @@ export default function LoginPage() {
             </div>
             <div>
               <p
-                className={`${display.className} text-[11px] font-semibold uppercase tracking-[0.22em] text-[#f7921c]`}
+                className={`${display.className} text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6366f1]`}
               >
                 Sales Console
               </p>
@@ -244,7 +244,7 @@ export default function LoginPage() {
                 autoFocus
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-[#f7921c]/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-[#f7921c]/15"
+                className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-[#6366f1]/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-[#6366f1]/15"
               />
             </div>
             <div>
@@ -256,13 +256,13 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-[#f7921c]/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-[#f7921c]/15"
+                className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-[#6366f1]/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-[#6366f1]/15"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-gradient-to-b from-[#f8a53a] to-[#e07d0f] px-4 py-2.5 text-sm font-medium text-[#1a1204] shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_8px_20px_-6px_rgba(247,146,28,0.5)] transition hover:brightness-105 disabled:opacity-50"
+              className="w-full rounded-lg bg-gradient-to-b from-[#818cf8] to-[#4f46e5] px-4 py-2.5 text-sm font-medium text-white shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_8px_20px_-6px_rgba(99,102,241,0.5)] transition hover:brightness-105 disabled:opacity-50"
             >
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
@@ -278,8 +278,8 @@ export default function LoginPage() {
 
       <style jsx>{`
         .kz-grid {
-          background-image: linear-gradient(rgba(248, 223, 193, 0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(248, 223, 193, 0.06) 1px, transparent 1px);
+          background-image: linear-gradient(rgba(165, 174, 255, 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(165, 174, 255, 0.06) 1px, transparent 1px);
           background-size: 40px 40px;
         }
         .kz-trace {
@@ -314,11 +314,11 @@ export default function LoginPage() {
           0%,
           100% {
             opacity: 0.35;
-            box-shadow: 0 0 0 0 rgba(247, 146, 28, 0.5);
+            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
           }
           50% {
             opacity: 1;
-            box-shadow: 0 0 6px 2px rgba(247, 146, 28, 0.5);
+            box-shadow: 0 0 6px 2px rgba(99, 102, 241, 0.5);
           }
         }
         .kz-fade-up {

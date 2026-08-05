@@ -4,6 +4,11 @@ function inr(n: number) {
   return Number(n || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function fmtDate(d: string | null | undefined) {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
+
 export default function QuoteDocument({
   quote,
   items,
@@ -22,124 +27,123 @@ export default function QuoteDocument({
   dueDate?: string | null;
 }) {
   const isSplitTax = quote.tax_type === "CGST_SGST";
+  const taxColSpan = isSplitTax ? 4 : 2;
 
   return (
-    <div className="bg-white text-sm text-gray-800" style={{ fontFamily: "Arial, sans-serif" }}>
-      <div className="border border-gray-300">
-        {/* Header */}
-        <div className="flex justify-between items-start p-6 border-b border-gray-300">
-          <div className="flex gap-4 items-start">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={company?.logo_url || "/kaizen-logo.png"}
-              alt="logo"
-              className="h-24 w-auto max-w-[180px] object-contain shrink-0"
-            />
-            <div>
-              <p className="font-bold text-base">{company?.company_name || "Your Company Name"}</p>
-              <p className="text-xs leading-5 text-gray-600">
-                {company?.address_line}
-                {company?.address_line && <br />}
-                {[company?.city, company?.state, company?.pincode].filter(Boolean).join(" ")}
-                {(company?.city || company?.state) && <br />}
-                {company?.country}
-                {company?.country && <br />}
-                {company?.gstin && <>GSTIN {company.gstin}<br /></>}
-                {(company?.phone || company?.email) && (
-                  <>
-                    Contact details:-{company?.phone}
-                    {company?.phone && company?.email ? "," : ""}
-                    {company?.email}
-                    <br />
-                  </>
-                )}
-                {company?.website}
-              </p>
+    <div className="bg-white text-ink-800" style={{ fontFamily: "'Inter', Arial, sans-serif" }}>
+      <div className="rounded-2xl overflow-hidden border border-ink-100 shadow-premium">
+        {/* Header band */}
+        <div className="relative bg-ink-gradient text-white px-8 pt-8 pb-9 overflow-hidden">
+          <div
+            className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full opacity-20"
+            style={{ background: "radial-gradient(circle, #6366f1 0%, transparent 70%)" }}
+          />
+          <div className="relative flex justify-between items-start gap-6">
+            <div className="flex items-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={company?.logo_url || "/kaizen-logo.png"}
+                alt="logo"
+                className="h-16 w-auto max-w-[150px] object-contain bg-white rounded-xl p-2 shrink-0 shadow-soft"
+              />
+              <div>
+                <p className="text-lg font-bold tracking-tight">{company?.company_name || "Your Company Name"}</p>
+                <p className="text-[11px] leading-5 text-ink-200/90 mt-1 max-w-xs">
+                  {company?.address_line}
+                  {company?.address_line && <br />}
+                  {[company?.city, company?.state, company?.pincode].filter(Boolean).join(" ")}
+                  {(company?.city || company?.state) && <br />}
+                  {company?.country}
+                  {company?.country && <br />}
+                  {company?.gstin && <>GSTIN {company.gstin}<br /></>}
+                  {(company?.phone || company?.email) && (
+                    <>
+                      {company?.phone}
+                      {company?.phone && company?.email ? " · " : ""}
+                      {company?.email}
+                      <br />
+                    </>
+                  )}
+                  {company?.website}
+                </p>
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-[11px] uppercase tracking-[0.25em] text-brand-300 font-semibold">{docLabel}</p>
+              <p className="text-2xl font-bold mt-1"># {quote.quote_number}</p>
+              <div className="text-[11px] text-ink-300 mt-3 space-y-0.5">
+                <p>{docLabel} Date &nbsp;{fmtDate(quote.created_at)}</p>
+                {dueDate && <p>Due Date &nbsp;&nbsp;&nbsp;{fmtDate(dueDate)}</p>}
+                {quote.valid_until && !dueDate && <p>Valid Until &nbsp;{fmtDate(quote.valid_until)}</p>}
+              </div>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-700">{docLabel}</h1>
         </div>
+        {/* Accent bar */}
+        <div className="h-1.5 bg-brand-gradient" />
 
-        {/* Meta row */}
-        <div className="grid grid-cols-2 border-b border-gray-300 text-xs">
-          <div className="p-4 border-r border-gray-300 space-y-1">
-            <p>
-              <span className="font-semibold"># </span>: {quote.quote_number}
+        {/* Bill To / Ship To / Details */}
+        <div className="grid grid-cols-3 gap-px bg-gray-100 text-xs">
+          <div className="bg-white p-5">
+            <p className="uppercase text-[10px] tracking-widest text-brand-600 font-bold mb-2">Billed To</p>
+            <p className="font-bold text-ink-900 text-sm">{account?.name}</p>
+            <p className="whitespace-pre-line text-ink-500 mt-1 leading-5">{account?.billing_address}</p>
+            {contact && <p className="text-ink-500 mt-1">Attn: {contact.name}</p>}
+            {account?.gstin && <p className="text-ink-500 mt-1">GSTIN {account.gstin}</p>}
+          </div>
+          <div className="bg-white p-5">
+            <p className="uppercase text-[10px] tracking-widest text-brand-600 font-bold mb-2">Shipped To</p>
+            <p className="whitespace-pre-line text-ink-500 leading-5">
+              {account?.shipping_address || account?.billing_address}
             </p>
-            <p>
-              <span className="font-semibold">{docLabel} Date</span> :{" "}
-              {new Date(quote.created_at).toLocaleDateString("en-GB").replace(/\//g, "-")}
-            </p>
-            {dueDate && (
+          </div>
+          <div className="bg-white p-5">
+            <p className="uppercase text-[10px] tracking-widest text-brand-600 font-bold mb-2">Details</p>
+            <div className="space-y-1 text-ink-500">
+              <p>Place of Supply: <span className="text-ink-800 font-medium">{quote.place_of_supply || "—"}</span></p>
               <p>
-                <span className="font-semibold">Due Date</span> :{" "}
-                {new Date(dueDate).toLocaleDateString("en-GB").replace(/\//g, "-")}
+                Tax Type:{" "}
+                <span className="text-ink-800 font-medium">{isSplitTax ? "CGST + SGST" : "IGST"}</span>
               </p>
-            )}
-          </div>
-          <div className="p-4">
-            <p>
-              <span className="font-semibold">Place Of Supply</span> : {quote.place_of_supply || "—"}
-            </p>
-          </div>
-        </div>
-
-        {/* Bill To / Ship To */}
-        <div className="grid grid-cols-2 border-b border-gray-300 text-xs">
-          <div className="p-4 border-r border-gray-300">
-            <p className="font-semibold mb-1">Bill To</p>
-            <p className="font-bold">{account?.name}</p>
-            <p className="whitespace-pre-line">{account?.billing_address}</p>
-            {contact && <p>Attn: {contact.name}</p>}
-            {account?.gstin && <p>GSTIN {account.gstin}</p>}
-          </div>
-          <div className="p-4">
-            <p className="font-semibold mb-1">Ship To</p>
-            <p className="whitespace-pre-line">{account?.shipping_address || account?.billing_address}</p>
+            </div>
           </div>
         </div>
 
         {/* Subject */}
         {quote.subject && (
-          <div className="p-4 border-b border-gray-300 text-xs">
-            <span className="font-semibold">Subject :</span>
-            <p className="mt-1">{quote.subject}</p>
+          <div className="px-6 py-4 border-t border-gray-100 bg-brand-50/40 text-xs">
+            <span className="font-bold text-brand-700 uppercase tracking-wide text-[10px]">Subject</span>
+            <p className="mt-1 text-ink-700 font-medium">{quote.subject}</p>
           </div>
         )}
 
         {/* Line items */}
         <table className="w-full text-xs border-collapse">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2 text-left">#</th>
-              <th className="border border-gray-300 p-2 text-left">Item &amp; Description</th>
-              <th className="border border-gray-300 p-2 text-left">HSN/SAC</th>
-              <th className="border border-gray-300 p-2 text-right">Qty</th>
-              <th className="border border-gray-300 p-2 text-right">Rate</th>
+            <tr className="bg-ink-900 text-ink-100">
+              <th className="p-2.5 pl-6 text-left font-semibold w-8">#</th>
+              <th className="p-2.5 text-left font-semibold">Item &amp; Description</th>
+              <th className="p-2.5 text-left font-semibold">HSN/SAC</th>
+              <th className="p-2.5 text-right font-semibold">Qty</th>
+              <th className="p-2.5 text-right font-semibold">Rate</th>
               {isSplitTax ? (
                 <>
-                  <th className="border border-gray-300 p-2 text-center" colSpan={2}>
-                    CGST
-                  </th>
-                  <th className="border border-gray-300 p-2 text-center" colSpan={2}>
-                    SGST
-                  </th>
+                  <th className="p-2.5 text-center font-semibold" colSpan={2}>CGST</th>
+                  <th className="p-2.5 text-center font-semibold" colSpan={2}>SGST</th>
                 </>
               ) : (
-                <th className="border border-gray-300 p-2 text-center" colSpan={2}>
-                  IGST
-                </th>
+                <th className="p-2.5 text-center font-semibold" colSpan={2}>IGST</th>
               )}
-              <th className="border border-gray-300 p-2 text-right">Amount</th>
+              <th className="p-2.5 pr-6 text-right font-semibold">Amount</th>
             </tr>
             {isSplitTax && (
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 p-1" colSpan={5}></th>
-                <th className="border border-gray-300 p-1 text-right">%</th>
-                <th className="border border-gray-300 p-1 text-right">Amt</th>
-                <th className="border border-gray-300 p-1 text-right">%</th>
-                <th className="border border-gray-300 p-1 text-right">Amt</th>
-                <th className="border border-gray-300 p-1"></th>
+              <tr className="bg-ink-800 text-ink-300 text-[10px]">
+                <th className="p-1" colSpan={5}></th>
+                <th className="p-1 text-right font-medium">%</th>
+                <th className="p-1 text-right font-medium">Amt</th>
+                <th className="p-1 text-right font-medium">%</th>
+                <th className="p-1 text-right font-medium pr-6">Amt</th>
+                <th className="p-1"></th>
               </tr>
             )}
           </thead>
@@ -148,34 +152,65 @@ export default function QuoteDocument({
               const lineAmount = Number(it.quantity) * Number(it.unit_price);
               const taxAmt = (lineAmount * Number(it.tax_rate)) / 100;
               return (
-                <tr key={it.id || idx}>
-                  <td className="border border-gray-300 p-2 align-top">{idx + 1}</td>
-                  <td className="border border-gray-300 p-2 align-top whitespace-pre-line">{it.description}</td>
-                  <td className="border border-gray-300 p-2 align-top">{it.hsn_sac}</td>
-                  <td className="border border-gray-300 p-2 align-top text-right">
+                <tr key={it.id || idx} className={idx % 2 === 1 ? "bg-ink-50/60" : "bg-white"}>
+                  <td className="p-2.5 pl-6 align-top border-b border-gray-100 text-ink-400 font-medium">
+                    {idx + 1}
+                  </td>
+                  <td className="p-2.5 align-top border-b border-gray-100">
+                    <div className="flex items-start gap-3">
+                      {it.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={it.image_url}
+                          alt=""
+                          className="h-11 w-11 rounded-lg object-cover border border-gray-200 shrink-0"
+                        />
+                      ) : null}
+                      <div className="min-w-0">
+                        <p className="font-semibold text-ink-900 whitespace-pre-line">{it.description}</p>
+                        {it.product_description && (
+                          <p className="text-ink-400 text-[10.5px] leading-4 mt-0.5 whitespace-pre-line">
+                            {it.product_description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-2.5 align-top border-b border-gray-100 text-ink-500">{it.hsn_sac}</td>
+                  <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-600">
                     {Number(it.quantity).toFixed(2)}
                   </td>
-                  <td className="border border-gray-300 p-2 align-top text-right">{inr(it.unit_price)}</td>
+                  <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-600">
+                    {inr(it.unit_price)}
+                  </td>
                   {isSplitTax ? (
                     <>
-                      <td className="border border-gray-300 p-2 align-top text-right">
+                      <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-500">
                         {(Number(it.tax_rate) / 2).toFixed(0)}%
                       </td>
-                      <td className="border border-gray-300 p-2 align-top text-right">{inr(taxAmt / 2)}</td>
-                      <td className="border border-gray-300 p-2 align-top text-right">
+                      <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-500">
+                        {inr(taxAmt / 2)}
+                      </td>
+                      <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-500">
                         {(Number(it.tax_rate) / 2).toFixed(0)}%
                       </td>
-                      <td className="border border-gray-300 p-2 align-top text-right">{inr(taxAmt / 2)}</td>
+                      <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-500">
+                        {inr(taxAmt / 2)}
+                      </td>
                     </>
                   ) : (
                     <>
-                      <td className="border border-gray-300 p-2 align-top text-right">
+                      <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-500">
                         {Number(it.tax_rate).toFixed(0)}%
                       </td>
-                      <td className="border border-gray-300 p-2 align-top text-right">{inr(taxAmt)}</td>
+                      <td className="p-2.5 align-top border-b border-gray-100 text-right text-ink-500">
+                        {inr(taxAmt)}
+                      </td>
                     </>
                   )}
-                  <td className="border border-gray-300 p-2 align-top text-right">{inr(lineAmount)}</td>
+                  <td className="p-2.5 pr-6 align-top border-b border-gray-100 text-right font-semibold text-ink-900">
+                    {inr(lineAmount)}
+                  </td>
                 </tr>
               );
             })}
@@ -183,64 +218,78 @@ export default function QuoteDocument({
         </table>
 
         {/* Totals + words */}
-        <div className="grid grid-cols-2 border-t-0">
-          <div className="p-4 text-xs border-r border-gray-300">
-            <p className="font-semibold">Total In Words</p>
-            <p className="italic font-semibold mt-1">{amountInWordsRupees(quote.grand_total)}</p>
+        <div className="grid grid-cols-2 border-t border-gray-100">
+          <div className="p-6 text-xs border-r border-gray-100">
+            <div className="bg-ink-50 rounded-xl p-4">
+              <p className="font-bold text-ink-700 uppercase text-[10px] tracking-widest">Total In Words</p>
+              <p className="italic font-semibold mt-1.5 text-ink-800">{amountInWordsRupees(quote.grand_total)}</p>
+            </div>
             {quote.notes && (
               <div className="mt-4">
-                <p className="font-semibold">Notes</p>
-                <p>{quote.notes}</p>
+                <p className="font-bold text-ink-700 uppercase text-[10px] tracking-widest">Notes</p>
+                <p className="mt-1.5 text-ink-600 whitespace-pre-line">{quote.notes}</p>
               </div>
             )}
           </div>
-          <div className="p-4 text-xs">
-            <div className="flex justify-between py-1">
+          <div className="p-6 text-xs">
+            <div className="flex justify-between py-1.5 text-ink-600">
               <span>Sub Total</span>
-              <span>{inr(quote.subtotal)}</span>
+              <span className="font-medium text-ink-800">{inr(quote.subtotal)}</span>
             </div>
             {Number(quote.discount) > 0 && (
-              <div className="flex justify-between py-1">
+              <div className="flex justify-between py-1.5 text-ink-600">
                 <span>Discount</span>
-                <span>-{inr(quote.discount)}</span>
+                <span className="font-medium text-ink-800">-{inr(quote.discount)}</span>
               </div>
             )}
-            <div className="flex justify-between py-1">
+            <div className="flex justify-between py-1.5 text-ink-600">
               <span>{isSplitTax ? "CGST + SGST" : "IGST"}</span>
-              <span>{inr(quote.tax_total)}</span>
+              <span className="font-medium text-ink-800">{inr(quote.tax_total)}</span>
             </div>
-            <div className="flex justify-between py-2 border-t border-gray-300 font-bold text-sm">
-              <span>Total</span>
-              <span>₹{inr(quote.grand_total)}</span>
+            <div className="mt-3 flex justify-between items-center bg-ink-gradient text-white rounded-xl px-4 py-3.5 shadow-soft">
+              <span className="font-semibold uppercase text-[11px] tracking-widest text-ink-200">
+                Total Due
+              </span>
+              <span className="font-bold text-lg">₹{inr(quote.grand_total)}</span>
             </div>
           </div>
         </div>
 
         {/* Bank + signature */}
-        <div className="grid grid-cols-2 border-t border-gray-300 text-xs">
-          <div className="p-4 border-r border-gray-300">
+        <div className="grid grid-cols-2 border-t border-gray-100 text-xs">
+          <div className="p-6 border-r border-gray-100">
             {company?.bank_account_name && (
               <>
-                <p className="font-semibold">BANK DETAILS</p>
-                <p>Account Name:-{company.bank_account_name}</p>
-                <p>Bank Name:- {company.bank_name}</p>
-                <p>Account Number:-{company.bank_account_number}</p>
-                <p>IFSC Code:-{company.bank_ifsc}</p>
+                <p className="font-bold text-ink-700 uppercase text-[10px] tracking-widest mb-2">Bank Details</p>
+                <div className="space-y-0.5 text-ink-500">
+                  <p>Account Name: <span className="text-ink-800 font-medium">{company.bank_account_name}</span></p>
+                  <p>Bank Name: <span className="text-ink-800 font-medium">{company.bank_name}</span></p>
+                  <p>Account Number: <span className="text-ink-800 font-medium">{company.bank_account_number}</span></p>
+                  <p>IFSC Code: <span className="text-ink-800 font-medium">{company.bank_ifsc}</span></p>
+                </div>
               </>
             )}
           </div>
-          <div className="p-4 flex items-end justify-center">
-            <p className="border-t border-gray-400 pt-1 w-48 text-center">Authorized Signature</p>
+          <div className="p-6 flex items-end justify-center">
+            <p className="border-t border-ink-300 pt-1.5 w-48 text-center text-ink-500">Authorized Signature</p>
           </div>
         </div>
 
         {/* Terms */}
         {quote.terms && (
-          <div className="p-4 border-t border-gray-300 text-xs whitespace-pre-line">
-            <p className="font-semibold mb-1">Terms &amp; Conditions</p>
+          <div className="px-6 py-5 border-t border-gray-100 text-xs whitespace-pre-line text-ink-500">
+            <p className="font-bold text-ink-700 uppercase text-[10px] tracking-widest mb-1.5">Terms &amp; Conditions</p>
             {quote.terms}
           </div>
         )}
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t border-gray-100 bg-ink-50/60 text-center">
+          <p className="text-[11px] text-ink-400">
+            Thank you for the opportunity to work with{" "}
+            <span className="font-semibold text-brand-600">{account?.name || "you"}</span>.
+          </p>
+        </div>
       </div>
     </div>
   );

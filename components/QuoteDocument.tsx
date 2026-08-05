@@ -163,7 +163,7 @@ export default function QuoteDocument({
                         <img
                           src={it.image_url}
                           alt=""
-                          className="h-20 w-20 rounded-lg object-cover border border-gray-200 shrink-0"
+                          className="h-36 w-36 rounded-lg object-cover border border-gray-200 shrink-0"
                         />
                       ) : null}
                       <div className="min-w-0">

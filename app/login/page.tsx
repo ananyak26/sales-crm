@@ -4,15 +4,28 @@
 // email tied to that username via the get_email_for_username() RPC, then
 // signs in normally through Supabase Auth.
 //
-// NOTE: this assumes a browser Supabase client at '@/lib/supabase/client'
-// (createClient() returning a client-side client). Adjust the import to
-// match whatever you already use in your existing login page, and copy
-// over any styling/branding (logo, colors) from your current version —
-// this is functionally complete but visually plain.
+// Visual design is grounded in the actual brand (Kaizen Laser &
+// Automation — see /public/kaizen-logo.png): a precision-engineering,
+// laser-cutting motif in the company's own black/amber palette, rather
+// than a generic dark sci-fi grid. The signature element is a small
+// technical drawing of a mounting bracket that gets "cut" by a traveling
+// laser beam on a loop — literal to what the company makes.
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { Oswald, JetBrains_Mono } from 'next/font/google'
+
+const display = Oswald({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  display: 'swap',
+})
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  display: 'swap',
+})
 
 export default function LoginPage() {
   const router = useRouter()
@@ -55,128 +68,291 @@ export default function LoginPage() {
     router.refresh()
   }
 
+  // Diagonal section-hatching inside the bracket drawing, generated rather
+  // than hand-placed — standard engineering-drawing convention for a cut
+  // cross-section.
+  const hatchLines = Array.from({ length: 20 }, (_, i) => {
+    const offset = i * 24 - 140
+    return { x1: 70 + offset, y1: 90, x2: 70 + offset - 330, y2: 420 }
+  })
+
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ink-950 px-4">
-      {/* Ambient glow behind everything */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,rgba(99,102,241,0.22)_0%,transparent_70%)]" />
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0b0c0e] px-4 py-10">
+      {/* Base ambient glow */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(247,146,28,0.08)_0%,transparent_70%)]" />
 
-      {/* 3D animated grid — ceiling */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 [perspective:500px] [transform-style:preserve-3d]">
-        <div className="grid-plane grid-plane-top" />
-      </div>
-      {/* 3D animated grid — floor */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 [perspective:500px] [transform-style:preserve-3d]">
-        <div className="grid-plane grid-plane-bottom" />
-      </div>
+      {/* Faint static machined-steel grid — no motion, kept quiet on purpose */}
+      <div
+        className="kz-grid pointer-events-none absolute inset-0 opacity-[0.35]"
+        aria-hidden="true"
+      />
 
-      {/* Horizon glow line */}
-      <div className="horizon-line pointer-events-none absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-brand-400/70 to-transparent" />
+      {/* Vignette so the grid/art fade toward the edges */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_78%_65%_at_50%_50%,transparent_30%,rgba(11,12,14,0.94)_100%)]" />
 
-      {/* Vignette so the grid fades toward the edges instead of hard-cutting */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_65%_at_50%_50%,transparent_35%,rgba(10,12,22,0.9)_100%)]" />
+      {/* Signature element: a laser-cut mounting-bracket drawing, traced
+          on a loop by a moving beam + cutting head. */}
+      <svg
+        className="pointer-events-none absolute -bottom-24 -right-20 h-[520px] w-[520px] opacity-[0.4] md:opacity-[0.55]"
+        viewBox="0 0 480 480"
+        fill="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <clipPath id="bracketClip">
+            <path d="M70,100 L300,100 L300,190 L230,190 L230,400 L70,400 Z" />
+          </clipPath>
+        </defs>
 
-      {/* Floating orbs for extra depth */}
-      <div className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-brand-500/20 blur-[90px]" />
-      <div className="pointer-events-none absolute -right-20 bottom-1/4 h-72 w-72 rounded-full bg-brand-400/20 blur-[90px]" />
+        {/* section hatching (material cross-section, engineering-drawing convention) */}
+        <g clipPath="url(#bracketClip)" stroke="#f7921c" strokeWidth="1" opacity="0.1">
+          {hatchLines.map((l, i) => (
+            <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+          ))}
+        </g>
 
-      <div className="relative w-full max-w-sm space-y-6 rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-premium backdrop-blur-xl">
-        <div>
-          <div className="mb-4 flex items-center gap-3">
-            <img src="/kaizen-logo.png" alt="" className="h-9 w-9 rounded-lg bg-white object-contain p-1" />
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-300">Sales CRM</span>
-          </div>
-          <h1 className="text-xl font-semibold text-white">Welcome back</h1>
-          <p className="mt-1 text-sm text-ink-300">Use the username and password your manager gave you.</p>
+        {/* base outline, always faintly visible */}
+        <path
+          d="M70,100 L300,100 L300,190 L230,190 L230,400 L70,400 Z"
+          stroke="#f8dfc1"
+          strokeWidth="1.25"
+          opacity="0.28"
+        />
+
+        {/* the same outline, "cut" by the beam on a loop */}
+        <path
+          id="kzBracketPath"
+          className="kz-trace"
+          d="M70,100 L300,100 L300,190 L230,190 L230,400 L70,400 Z"
+          stroke="#f7921c"
+          strokeWidth="2"
+          pathLength={1}
+          strokeLinecap="round"
+        />
+
+        {/* mounting holes */}
+        {[
+          [120, 140],
+          [255, 140],
+          [120, 250],
+          [120, 350],
+        ].map(([cx, cy], i) => (
+          <circle key={i} cx={cx} cy={cy} r="9" stroke="#f8dfc1" strokeWidth="1" opacity="0.3" />
+        ))}
+
+        {/* dimension line */}
+        <line x1="70" y1="70" x2="300" y2="70" stroke="#f8dfc1" strokeWidth="1" opacity="0.28" />
+        <line x1="70" y1="64" x2="70" y2="76" stroke="#f8dfc1" strokeWidth="1" opacity="0.28" />
+        <line x1="300" y1="64" x2="300" y2="76" stroke="#f8dfc1" strokeWidth="1" opacity="0.28" />
+        <text x="164" y="56" fill="#f8dfc1" opacity="0.35" fontSize="11" fontFamily="monospace">
+          230mm
+        </text>
+
+        {/* registration / alignment crosshairs, a real laser-cutting convention */}
+        <g stroke="#f7921c" strokeWidth="1" opacity="0.3">
+          <line x1="382" y1="76" x2="382" y2="100" />
+          <line x1="370" y1="88" x2="394" y2="88" />
+          <circle cx="382" cy="88" r="7" />
+        </g>
+
+        {/* the moving cutting head, following the same path */}
+        <circle r="3.2" fill="#f7921c">
+          <animateMotion dur="9s" repeatCount="indefinite" keyPoints="0;1;1;1" keyTimes="0;0.5;0.78;1" calcMode="linear">
+            <mpath href="#kzBracketPath" />
+          </animateMotion>
+          <animate
+            attributeName="opacity"
+            values="0;1;1;0;0"
+            keyTimes="0;0.08;0.78;0.9;1"
+            dur="9s"
+            repeatCount="indefinite"
+          />
+        </circle>
+        <circle r="8" fill="#f7921c" opacity="0.25">
+          <animateMotion dur="9s" repeatCount="indefinite" keyPoints="0;1;1;1" keyTimes="0;0.5;0.78;1" calcMode="linear">
+            <mpath href="#kzBracketPath" />
+          </animateMotion>
+          <animate
+            attributeName="opacity"
+            values="0;0.25;0.25;0;0"
+            keyTimes="0;0.08;0.78;0.9;1"
+            dur="9s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </svg>
+
+      <div className="relative w-full max-w-sm">
+        {/* control-panel readout header, above the card */}
+        <div
+          className={`${mono.className} kz-fade-left mb-3 flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-white/30`}
+        >
+          <span>Kaizen Ops / Sales Console</span>
+          <span className="flex items-center gap-1.5">
+            <span className="kz-pulse h-1.5 w-1.5 rounded-full bg-[#f7921c]" />
+            secure link
+          </span>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
-              {error}
-            </p>
-          )}
-          <div>
-            <label className="mb-1.5 block text-xs font-medium text-ink-300">Username</label>
-            <input
-              required
-              autoFocus
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-ink-400 outline-none transition focus:border-brand-400/60 focus:bg-white/[0.07] focus:ring-4 focus:ring-brand-500/15"
-            />
+
+        <div className="kz-fade-up relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.015] p-8 shadow-[0_2px_6px_rgba(0,0,0,0.35),0_28px_64px_-20px_rgba(0,0,0,0.65)] backdrop-blur-xl">
+          {/* corner registration ticks, echoing the laser-cutting motif */}
+          <span className="pointer-events-none absolute -left-px -top-px h-3 w-3 rounded-tl-2xl border-l border-t border-[#f7921c]/50" />
+          <span className="pointer-events-none absolute -right-px -top-px h-3 w-3 rounded-tr-2xl border-r border-t border-[#f7921c]/50" />
+          <span className="pointer-events-none absolute -bottom-px -left-px h-3 w-3 rounded-bl-2xl border-b border-l border-[#f7921c]/50" />
+          <span className="pointer-events-none absolute -bottom-px -right-px h-3 w-3 rounded-br-2xl border-b border-r border-[#f7921c]/50" />
+
+          {/* top accent line, like a machine status strip */}
+          <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#f7921c]/70 to-transparent" />
+
+          <div className="mb-7 flex items-center gap-3.5">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white/95 p-1.5 shadow-[0_2px_10px_rgba(0,0,0,0.4)]">
+              <img
+                src="/kaizen-logo.png"
+                alt="Kaizen Laser and Automation"
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <div>
+              <p
+                className={`${display.className} text-[11px] font-semibold uppercase tracking-[0.22em] text-[#f7921c]`}
+              >
+                Sales Console
+              </p>
+              <p className="mt-0.5 text-[11px] text-white/35">Kaizen Laser &amp; Automation</p>
+            </div>
           </div>
-          <div>
-            <label className="mb-1.5 block text-xs font-medium text-ink-300">Password</label>
-            <input
-              required
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-ink-400 outline-none transition focus:border-brand-400/60 focus:bg-white/[0.07] focus:ring-4 focus:ring-brand-500/15"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-medium text-white shadow-glow transition hover:brightness-110 disabled:opacity-50"
-          >
-            {loading ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
+
+          <h1 className={`${display.className} text-2xl font-semibold tracking-tight text-white`}>
+            Welcome back
+          </h1>
+          <p className="mb-6 mt-1.5 text-sm leading-relaxed text-white/45">
+            Use the username and password your manager gave you.
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <p className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
+                {error}
+              </p>
+            )}
+            <div>
+              <label className={`${mono.className} mb-1.5 block text-[11px] uppercase tracking-[0.1em] text-white/40`}>
+                Username
+              </label>
+              <input
+                required
+                autoFocus
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-[#f7921c]/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-[#f7921c]/15"
+              />
+            </div>
+            <div>
+              <label className={`${mono.className} mb-1.5 block text-[11px] uppercase tracking-[0.1em] text-white/40`}>
+                Password
+              </label>
+              <input
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition focus:border-[#f7921c]/60 focus:bg-white/[0.06] focus:ring-4 focus:ring-[#f7921c]/15"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-lg bg-gradient-to-b from-[#f8a53a] to-[#e07d0f] px-4 py-2.5 text-sm font-medium text-[#1a1204] shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_8px_20px_-6px_rgba(247,146,28,0.5)] transition hover:brightness-105 disabled:opacity-50"
+            >
+              {loading ? 'Signing in…' : 'Sign in'}
+            </button>
+          </form>
+        </div>
+
+        <p
+          className={`${mono.className} kz-fade-up mt-5 text-center text-[10px] uppercase tracking-[0.18em] text-white/20`}
+        >
+          Precision leads · precision quotes · precision close
+        </p>
       </div>
 
       <style jsx>{`
-        .grid-plane {
-          position: absolute;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background-image: linear-gradient(rgba(129, 140, 248, 0.35) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(129, 140, 248, 0.35) 1px, transparent 1px);
-          background-size: 56px 56px;
+        .kz-grid {
+          background-image: linear-gradient(rgba(248, 223, 193, 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(248, 223, 193, 0.06) 1px, transparent 1px);
+          background-size: 40px 40px;
         }
-        .grid-plane-top {
-          top: 0;
-          transform-origin: bottom;
-          transform: rotateX(-75deg);
-          animation: grid-scroll-up 5s linear infinite;
+        .kz-trace {
+          stroke-dasharray: 1;
+          stroke-dashoffset: 1;
+          animation: kz-trace-draw 9s ease-in-out infinite;
         }
-        .grid-plane-bottom {
-          bottom: 0;
-          transform-origin: top;
-          transform: rotateX(75deg);
-          animation: grid-scroll-down 5s linear infinite;
-        }
-        @keyframes grid-scroll-down {
-          from {
-            background-position: 0 0;
+        @keyframes kz-trace-draw {
+          0% {
+            stroke-dashoffset: 1;
+            opacity: 0;
           }
-          to {
-            background-position: 0 56px;
+          8% {
+            opacity: 1;
           }
-        }
-        @keyframes grid-scroll-up {
-          from {
-            background-position: 0 0;
+          50% {
+            stroke-dashoffset: 0;
+            opacity: 1;
           }
-          to {
-            background-position: 0 -56px;
+          78% {
+            opacity: 1;
+          }
+          100% {
+            stroke-dashoffset: 0;
+            opacity: 0;
           }
         }
-        .horizon-line {
-          transform-origin: center;
-          animation: horizon-pulse 4s ease-in-out infinite;
+        .kz-pulse {
+          animation: kz-pulse-anim 2.6s ease-in-out infinite;
         }
-        @keyframes horizon-pulse {
+        @keyframes kz-pulse-anim {
           0%,
           100% {
-            opacity: 0.45;
-            transform: translateY(-50%) scaleX(0.55);
-            box-shadow: 0 0 10px 2px rgba(129, 140, 248, 0.3);
+            opacity: 0.35;
+            box-shadow: 0 0 0 0 rgba(247, 146, 28, 0.5);
           }
           50% {
             opacity: 1;
-            transform: translateY(-50%) scaleX(1);
-            box-shadow: 0 0 44px 10px rgba(129, 140, 248, 0.85);
+            box-shadow: 0 0 6px 2px rgba(247, 146, 28, 0.5);
+          }
+        }
+        .kz-fade-up {
+          animation: kz-fade-up-anim 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes kz-fade-up-anim {
+          from {
+            opacity: 0;
+            transform: translateY(14px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .kz-fade-left {
+          animation: kz-fade-left-anim 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes kz-fade-left-anim {
+          from {
+            opacity: 0;
+            transform: translateX(-12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .kz-trace,
+          .kz-pulse,
+          .kz-fade-up,
+          .kz-fade-left {
+            animation: none !important;
           }
         }
       `}</style>

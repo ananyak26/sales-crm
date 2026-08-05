@@ -128,8 +128,13 @@ export default function NewQuotePage() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    const { count } = await supabase.from("quotes").select("*", { count: "exact", head: true });
-    const quoteNumber = `QT-${String((count || 0) + 1).padStart(4, "0")}`;
+    const { data: quoteNumberData, error: numError } = await supabase.rpc("next_quote_number");
+    if (numError || !quoteNumberData) {
+      alert("Error generating quote number: " + numError?.message);
+      setSaving(false);
+      return;
+    }
+    const quoteNumber = quoteNumberData as string;
 
     const { data: quote, error } = await supabase
       .from("quotes")

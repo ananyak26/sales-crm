@@ -70,7 +70,7 @@ export default function LoginPage() {
       </div>
 
       {/* Horizon glow line */}
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-brand-400/70 to-transparent shadow-[0_0_24px_4px_rgba(129,140,248,0.5)]" />
+      <div className="horizon-line pointer-events-none absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-brand-400/70 to-transparent" />
 
       {/* Vignette so the grid fades toward the edges instead of hard-cutting */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_65%_at_50%_50%,transparent_35%,rgba(10,12,22,0.9)_100%)]" />
@@ -160,6 +160,23 @@ export default function LoginPage() {
           }
           to {
             background-position: 0 -56px;
+          }
+        }
+        .horizon-line {
+          transform-origin: center;
+          animation: horizon-pulse 4s ease-in-out infinite;
+        }
+        @keyframes horizon-pulse {
+          0%,
+          100% {
+            opacity: 0.45;
+            transform: translateY(-50%) scaleX(0.55);
+            box-shadow: 0 0 10px 2px rgba(129, 140, 248, 0.3);
+          }
+          50% {
+            opacity: 1;
+            transform: translateY(-50%) scaleX(1);
+            box-shadow: 0 0 44px 10px rgba(129, 140, 248, 0.85);
           }
         }
       `}</style>

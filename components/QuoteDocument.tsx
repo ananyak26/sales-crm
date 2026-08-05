@@ -45,7 +45,7 @@ export default function QuoteDocument({
                 src={company?.logo_url || "/kaizen-logo.png"}
                 alt="logo"
                 crossOrigin="anonymous"
-                className="h-28 w-auto max-w-[220px] object-contain bg-white rounded-xl p-2 shrink-0 shadow-soft self-stretch"
+                className="h-28 w-auto max-w-[220px] object-contain object-bottom bg-white rounded-xl p-2 shrink-0 shadow-soft self-stretch"
               />
               <div>
                 <p className="text-lg font-bold tracking-tight">{company?.company_name || "Your Company Name"}</p>

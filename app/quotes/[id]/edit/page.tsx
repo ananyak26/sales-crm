@@ -8,6 +8,8 @@ import type { Account, Contact, Deal, Product, QuoteItem } from "@/lib/types";
 const blankItem = (): QuoteItem => ({
   product_id: null,
   description: "",
+  product_description: "",
+  image_url: null,
   hsn_sac: "",
   unit: "Nos",
   quantity: 1,
@@ -112,6 +114,8 @@ export default function EditQuotePage() {
     updateItem(index, {
       product_id: p.id,
       description: p.name,
+      product_description: p.description || "",
+      image_url: p.image_url || null,
       unit_price: Number(p.price),
       tax_rate: Number(p.tax_rate),
       hsn_sac: p.hsn_sac || "",
@@ -173,6 +177,8 @@ export default function EditQuotePage() {
       quote_id: id,
       product_id: i.product_id,
       description: i.description,
+      product_description: i.product_description || null,
+      image_url: i.image_url || null,
       hsn_sac: i.hsn_sac || null,
       unit: i.unit || "Nos",
       quantity: i.quantity,
@@ -265,18 +271,30 @@ export default function EditQuotePage() {
             <div key={idx} className="grid grid-cols-12 gap-2 items-end border-b border-gray-100 pb-3">
               <div className="col-span-2">
                 <label className="label">Product</label>
-                <select
-                  className="input"
-                  value={item.product_id || ""}
-                  onChange={(e) => pickProduct(idx, e.target.value)}
-                >
-                  <option value="">Custom item</option>
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-2">
+                  {item.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.image_url}
+                      alt=""
+                      className="h-9 w-9 rounded-md object-cover border border-gray-200 shrink-0"
+                    />
+                  ) : (
+                    <div className="h-9 w-9 rounded-md border border-dashed border-gray-200 shrink-0" />
+                  )}
+                  <select
+                    className="input"
+                    value={item.product_id || ""}
+                    onChange={(e) => pickProduct(idx, e.target.value)}
+                  >
+                    <option value="">Custom item</option>
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <div className="col-span-3">
                 <label className="label">Description</label>
@@ -285,6 +303,13 @@ export default function EditQuotePage() {
                   rows={1}
                   value={item.description}
                   onChange={(e) => updateItem(idx, { description: e.target.value })}
+                />
+                <textarea
+                  className="input mt-1 text-xs"
+                  rows={1}
+                  placeholder="Product detail shown under the item on the quotation (optional)"
+                  value={item.product_description || ""}
+                  onChange={(e) => updateItem(idx, { product_description: e.target.value })}
                 />
               </div>
               <div className="col-span-1">

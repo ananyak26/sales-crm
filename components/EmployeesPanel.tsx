@@ -30,6 +30,9 @@ export default function EmployeesPanel({ initialEmployees }: { initialEmployees:
   const [resetTarget, setResetTarget] = useState<string | null>(null);
   const [resetPassword, setResetPassword] = useState("");
   const [resetMessage, setResetMessage] = useState<string | null>(null);
+  const [removeTarget, setRemoveTarget] = useState<string | null>(null);
+  const [removing, setRemoving] = useState(false);
+  const [removeError, setRemoveError] = useState<string | null>(null);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -75,6 +78,22 @@ export default function EmployeesPanel({ initialEmployees }: { initialEmployees:
     setResetMessage("Password updated. Share it with them directly.");
     setResetTarget(null);
     setResetPassword("");
+  }
+
+  async function handleRemove(id: string) {
+    setRemoving(true);
+    setRemoveError(null);
+    const res = await fetch(`/api/employees/${id}`, { method: "DELETE" });
+    const data = await res.json();
+    setRemoving(false);
+
+    if (!res.ok) {
+      setRemoveError(data.error ?? "Something went wrong");
+      return;
+    }
+
+    setEmployees((prev) => prev.filter((e) => e.id !== id));
+    setRemoveTarget(null);
   }
 
   return (
@@ -173,17 +192,48 @@ export default function EmployeesPanel({ initialEmployees }: { initialEmployees:
                         Cancel
                       </button>
                     </div>
+                  ) : removeTarget === emp.id ? (
+                    <div className="flex items-center justify-end gap-2">
+                      <span className="text-xs text-rose-600">Remove {emp.username}? Their past records stay, unowned.</span>
+                      <button
+                        onClick={() => handleRemove(emp.id)}
+                        disabled={removing}
+                        className="btn-sm bg-rose-600 text-white hover:bg-rose-700 rounded-lg px-3 py-1.5"
+                      >
+                        {removing ? "Removing…" : "Confirm"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setRemoveTarget(null);
+                          setRemoveError(null);
+                        }}
+                        className="text-xs text-gray-400 hover:text-ink-600"
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   ) : (
-                    <button
-                      onClick={() => {
-                        setResetTarget(emp.id);
-                        setResetPassword(generatePassword());
-                        setResetMessage(null);
-                      }}
-                      className="text-xs font-semibold text-brand-600 hover:text-brand-700"
-                    >
-                      Reset password
-                    </button>
+                    <div className="flex items-center justify-end gap-4">
+                      <button
+                        onClick={() => {
+                          setResetTarget(emp.id);
+                          setResetPassword(generatePassword());
+                          setResetMessage(null);
+                        }}
+                        className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                      >
+                        Reset password
+                      </button>
+                      <button
+                        onClick={() => {
+                          setRemoveTarget(emp.id);
+                          setRemoveError(null);
+                        }}
+                        className="text-xs font-semibold text-rose-600 hover:text-rose-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   )}
                 </td>
               </tr>
@@ -199,6 +249,7 @@ export default function EmployeesPanel({ initialEmployees }: { initialEmployees:
         </table>
       </div>
       {resetMessage && <p className="text-sm text-gray-500">{resetMessage}</p>}
+      {removeError && <p className="text-sm text-rose-600">{removeError}</p>}
     </div>
   );
 }

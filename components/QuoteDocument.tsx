@@ -39,12 +39,12 @@ export default function QuoteDocument({
             style={{ background: "radial-gradient(circle, #6366f1 0%, transparent 70%)" }}
           />
           <div className="relative flex justify-between items-start gap-6">
-            <div className="flex items-center gap-4">
+            <div className="flex items-stretch gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={company?.logo_url || "/kaizen-logo.png"}
                 alt="logo"
-                className="h-16 w-auto max-w-[150px] object-contain bg-white rounded-xl p-2 shrink-0 shadow-soft"
+                className="h-28 w-auto max-w-[220px] object-contain bg-white rounded-xl p-2 shrink-0 shadow-soft self-stretch"
               />
               <div>
                 <p className="text-lg font-bold tracking-tight">{company?.company_name || "Your Company Name"}</p>
@@ -163,7 +163,7 @@ export default function QuoteDocument({
                         <img
                           src={it.image_url}
                           alt=""
-                          className="h-11 w-11 rounded-lg object-cover border border-gray-200 shrink-0"
+                          className="h-20 w-20 rounded-lg object-cover border border-gray-200 shrink-0"
                         />
                       ) : null}
                       <div className="min-w-0">

@@ -157,13 +157,13 @@ export default function QuoteDocument({
                     {idx + 1}
                   </td>
                   <td className="p-2.5 align-top border-b border-gray-100">
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-stretch gap-3">
                       {it.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={it.image_url}
                           alt=""
-                          className="h-36 w-36 rounded-lg object-cover border border-gray-200 shrink-0"
+                          className="min-h-36 min-w-36 aspect-square self-stretch object-cover rounded-lg border border-gray-200 shrink-0"
                         />
                       ) : null}
                       <div className="min-w-0">

@@ -110,8 +110,12 @@ export default function QuoteDetailPage() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    const { count } = await supabase.from("invoices").select("*", { count: "exact", head: true });
-    const invoiceNumber = `INV-${String((count || 0) + 1).padStart(4, "0")}`;
+    const { data: invoiceNumberData, error: numError } = await supabase.rpc("next_invoice_number");
+    if (numError || !invoiceNumberData) {
+      alert("Error generating sales order number: " + numError?.message);
+      return;
+    }
+    const invoiceNumber = invoiceNumberData as string;
 
     const { data: invoice, error } = await supabase
       .from("invoices")

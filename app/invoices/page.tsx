@@ -37,6 +37,13 @@ export default function InvoicesPage() {
     load();
   };
 
+  const remove = async (id: string) => {
+    if (!confirm("Delete this Sales Order? This cannot be undone.")) return;
+    await supabase.from("invoice_items").delete().eq("invoice_id", id);
+    await supabase.from("invoices").delete().eq("id", id);
+    load();
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Sales Orders</h1>
@@ -54,6 +61,7 @@ export default function InvoicesPage() {
               <th>Status</th>
               <th>Total</th>
               <th>Due Date</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -72,11 +80,16 @@ export default function InvoicesPage() {
                 </td>
                 <td>₹{Number(inv.grand_total).toLocaleString("en-IN")}</td>
                 <td>{inv.due_date ? new Date(inv.due_date).toLocaleDateString() : "—"}</td>
+                <td className="whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                  <button className="text-red-600 text-sm" onClick={() => remove(inv.id)}>
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
             {invoices.length === 0 && (
               <tr>
-                <td colSpan={isBoss ? 6 : 5} className="text-center text-gray-400 py-6">
+                <td colSpan={isBoss ? 7 : 6} className="text-center text-gray-400 py-6">
                   No Sales Orders yet.
                 </td>
               </tr>

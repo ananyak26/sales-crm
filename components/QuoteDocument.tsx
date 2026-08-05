@@ -163,10 +163,10 @@ export default function QuoteDocument({
                         <img
                           src={it.image_url}
                           alt=""
-                          className="min-h-36 min-w-36 aspect-square self-stretch object-cover rounded-lg border border-gray-200 shrink-0"
+                          className="w-24 min-h-24 max-h-40 self-stretch object-cover rounded-lg border border-gray-200 shrink-0"
                         />
                       ) : null}
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="font-semibold text-ink-900 whitespace-pre-line">{it.description}</p>
                         {it.product_description && (
                           <p className="text-ink-400 text-[10.5px] leading-4 mt-0.5 whitespace-pre-line">

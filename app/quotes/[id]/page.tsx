@@ -96,6 +96,14 @@ export default function QuoteDetailPage() {
       addCanvasAsPages(photosCanvas, true);
     }
 
+    const totalPages = pdf.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(9);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 6, { align: "center" });
+    }
+
     pdf.save(`${quote.quote_number}.pdf`);
   };
 

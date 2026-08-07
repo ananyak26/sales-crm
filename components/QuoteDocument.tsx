@@ -42,13 +42,13 @@ export default function QuoteDocument({
             style={{ background: "radial-gradient(circle, #ffffff 0%, transparent 70%)" }}
           />
           <div className="relative flex justify-between items-start gap-6">
-            <div className="flex items-stretch gap-4">
+            <div className="flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={company?.logo_url || "/kaizen-logo.png"}
                 alt="logo"
                 crossOrigin="anonymous"
-                className="h-28 w-auto max-w-[220px] object-contain object-bottom bg-white rounded-xl p-2 shrink-0 shadow-soft self-stretch"
+                className="h-16 w-auto max-w-[180px] object-contain shrink-0"
               />
               <div>
                 <p className="text-xl font-bold tracking-tight">{company?.company_name || "Your Company Name"}</p>
@@ -160,58 +160,45 @@ export default function QuoteDocument({
               const taxAmt = (lineAmount * Number(it.tax_rate)) / 100;
               return (
                 <tr key={it.id || idx} className={idx % 2 === 1 ? "bg-gray-50" : "bg-white"}>
-                  <td className="p-2.5 pl-6 align-top border border-gray-300 text-gray-500 font-medium">
+                  <td className="p-2.5 pl-6 align-top border border-gray-300 text-gray-700 font-medium">
                     {idx + 1}
                   </td>
                   <td className="p-2.5 align-top border border-gray-300">
-                    <div className="flex items-stretch gap-3">
-                      {it.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={it.image_url}
-                          alt=""
-                          crossOrigin="anonymous"
-                          className="w-24 min-h-24 max-h-40 self-stretch object-cover rounded-lg border border-gray-300 shrink-0"
-                        />
-                      ) : null}
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-gray-900 whitespace-pre-line">{it.description}</p>
-                        {it.product_description && (
-                          <p className="text-gray-500 text-xs leading-5 mt-0.5 whitespace-pre-line">
-                            {it.product_description}
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                    <p className="font-semibold text-gray-900 whitespace-pre-line">{it.description}</p>
+                    {it.product_description && (
+                      <p className="text-gray-600 text-xs leading-5 mt-0.5 whitespace-pre-line">
+                        {it.product_description}
+                      </p>
+                    )}
                   </td>
-                  <td className="p-2.5 align-top border border-gray-300 text-gray-600">{it.hsn_sac}</td>
-                  <td className="p-2.5 align-top border border-gray-300 text-right text-gray-700">
+                  <td className="p-2.5 align-top border border-gray-300 text-gray-800">{it.hsn_sac}</td>
+                  <td className="p-2.5 align-top border border-gray-300 text-right text-gray-900">
                     {Number(it.quantity).toFixed(2)}
                   </td>
-                  <td className="p-2.5 align-top border border-gray-300 text-right text-gray-700">
+                  <td className="p-2.5 align-top border border-gray-300 text-right text-gray-900">
                     {inr(it.unit_price)}
                   </td>
                   {isSplitTax ? (
                     <>
-                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-600">
+                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-800">
                         {(Number(it.tax_rate) / 2).toFixed(0)}%
                       </td>
-                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-600">
+                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-800">
                         {inr(taxAmt / 2)}
                       </td>
-                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-600">
+                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-800">
                         {(Number(it.tax_rate) / 2).toFixed(0)}%
                       </td>
-                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-600">
+                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-800">
                         {inr(taxAmt / 2)}
                       </td>
                     </>
                   ) : (
                     <>
-                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-600">
+                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-800">
                         {Number(it.tax_rate).toFixed(0)}%
                       </td>
-                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-600">
+                      <td className="p-2.5 align-top border border-gray-300 text-right text-gray-800">
                         {inr(taxAmt)}
                       </td>
                     </>

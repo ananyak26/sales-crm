@@ -34,13 +34,9 @@ export default function QuoteDocument({
       <div className="rounded-2xl overflow-hidden border border-gray-300 shadow-premium">
         {/* Header band */}
         <div
-          className="relative text-white px-8 pt-8 pb-9 overflow-hidden"
+          className="relative text-gray-900 px-8 pt-8 pb-9 overflow-hidden"
           style={{ background: "#999999" }}
         >
-          <div
-            className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full opacity-20"
-            style={{ background: "radial-gradient(circle, #ffffff 0%, transparent 70%)" }}
-          />
           <div className="relative flex justify-between items-start gap-6">
             <div className="flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -51,8 +47,8 @@ export default function QuoteDocument({
                 className="h-16 w-auto max-w-[180px] object-contain shrink-0"
               />
               <div>
-                <p className="text-xl font-bold tracking-tight">{company?.company_name || "Your Company Name"}</p>
-                <p className="text-[13px] leading-6 text-gray-100 mt-1 max-w-xs">
+                <p className="text-xl font-bold tracking-tight text-gray-900">{company?.company_name || "Your Company Name"}</p>
+                <p className="text-[13px] leading-6 text-gray-900 mt-1 max-w-xs">
                   {company?.address_line}
                   {company?.address_line && <br />}
                   {[company?.city, company?.state, company?.pincode].filter(Boolean).join(" ")}
@@ -73,9 +69,9 @@ export default function QuoteDocument({
               </div>
             </div>
             <div className="text-right shrink-0">
-              <p className="text-xs uppercase tracking-[0.25em] text-gray-100 font-semibold">{docLabel}</p>
-              <p className="text-3xl font-bold mt-1"># {quote.quote_number}</p>
-              <div className="text-[13px] text-gray-100 mt-3 space-y-0.5">
+              <p className="text-xs uppercase tracking-[0.25em] text-gray-900 font-semibold">{docLabel}</p>
+              <p className="text-3xl font-bold mt-1 text-gray-900"># {quote.quote_number}</p>
+              <div className="text-[13px] text-gray-900 mt-3 space-y-0.5">
                 <p>{docLabel} Date &nbsp;{fmtDate(quote.created_at)}</p>
                 {dueDate && <p>Due Date &nbsp;&nbsp;&nbsp;{fmtDate(dueDate)}</p>}
                 {quote.valid_until && !dueDate && <p>Valid Until &nbsp;{fmtDate(quote.valid_until)}</p>}
@@ -242,13 +238,13 @@ export default function QuoteDocument({
               <span className="font-medium text-gray-800">{inr(quote.tax_total)}</span>
             </div>
             <div
-              className="mt-3 flex justify-between items-center text-white rounded-xl px-4 py-3.5 shadow-soft"
+              className="mt-3 flex justify-between items-center text-gray-900 rounded-xl px-4 py-3.5 shadow-soft"
               style={{ background: "#999999" }}
             >
-              <span className="font-semibold uppercase text-xs tracking-widest text-gray-100">
+              <span className="font-semibold uppercase text-xs tracking-widest text-gray-900">
                 Total Due
               </span>
-              <span className="font-bold text-xl">₹{inr(quote.grand_total)}</span>
+              <span className="font-bold text-xl text-gray-900">₹{inr(quote.grand_total)}</span>
             </div>
           </div>
         </div>
@@ -281,13 +277,6 @@ export default function QuoteDocument({
           </div>
         )}
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-300 bg-gray-50 text-center">
-          <p className="text-sm text-gray-500">
-            Thank you for the opportunity to work with{" "}
-            <span className="font-semibold text-gray-700">{account?.name || "you"}</span>.
-          </p>
-        </div>
       </div>
     </div>
   );

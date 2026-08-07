@@ -141,13 +141,13 @@ export default function AccountsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Accounts</h1>
+        <h1 className="text-2xl font-bold">Customers</h1>
         <button className="btn-primary" onClick={openNew}>
-          + New Account
+          + New Customer
         </button>
       </div>
 
-      <Modal open={showForm} onClose={() => setShowForm(false)} title={editingId ? "Edit Account" : "New Account"}>
+      <Modal open={showForm} onClose={() => setShowForm(false)} title={editingId ? "Edit Customer" : "New Customer"}>
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

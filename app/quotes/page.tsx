@@ -62,7 +62,7 @@ export default function QuotesPage() {
           <thead>
             <tr>
               <th>Quote #</th>
-              <th>Account</th>
+              <th>Customer</th>
               {isBoss && <th>Owner</th>}
               <th>Subject</th>
               <th>Status</th>

@@ -56,7 +56,7 @@ export default function InvoicesPage() {
           <thead>
             <tr>
               <th>Sales Order #</th>
-              <th>Account</th>
+              <th>Customer</th>
               {isBoss && <th>Owner</th>}
               <th>Status</th>
               <th>Total</th>

@@ -93,7 +93,7 @@ export default function DealsPage() {
               <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div>
-              <label className="label">Account</label>
+              <label className="label">Customer</label>
               <select className="input" value={form.account_id || ""} onChange={(e) => setForm({ ...form, account_id: e.target.value })}>
                 <option value="">—</option>
                 {accounts.map((a) => (
@@ -136,7 +136,7 @@ export default function DealsPage() {
           <thead>
             <tr>
               <th>Deal</th>
-              <th>Account</th>
+              <th>Customer</th>
               {isBoss && <th>Owner</th>}
               <th>Stage</th>
               <th>Amount</th>

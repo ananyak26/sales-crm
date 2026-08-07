@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import QuoteDocument from "@/components/QuoteDocument";
+import QuoteItemPhotos from "@/components/QuoteItemPhotos";
 
 export default async function PublicQuotePage({ params }: { params: { token: string } }) {
   const supabase = createClient();
@@ -28,6 +29,7 @@ export default async function PublicQuotePage({ params }: { params: { token: str
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         <QuoteDocument quote={quote} items={items || []} account={account} contact={contact} company={company} />
+        <QuoteItemPhotos items={items || []} />
       </div>
     </div>
   );

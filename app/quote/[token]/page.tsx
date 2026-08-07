@@ -29,7 +29,7 @@ export default async function PublicQuotePage({ params }: { params: { token: str
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-3xl mx-auto">
         <QuoteDocument quote={quote} items={items || []} account={account} contact={contact} company={company} />
-        <QuoteItemPhotos items={items || []} />
+        <QuoteItemPhotos items={items || []} terms={quote.terms} />
       </div>
     </div>
   );

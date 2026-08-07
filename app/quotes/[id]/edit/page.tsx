@@ -201,7 +201,7 @@ export default function EditQuotePage() {
       <div className="card p-5 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="label">Account / Client *</label>
+            <label className="label">Customer *</label>
             <select className="input" value={accountId} onChange={(e) => setAccountId(e.target.value)}>
               <option value="">Select account</option>
               {accounts.map((a) => (
@@ -249,7 +249,7 @@ export default function EditQuotePage() {
           <div className="flex items-end">
             <p className="text-xs text-gray-500">
               Tax type: <span className="font-semibold">{taxType === "IGST" ? "IGST (interstate)" : "CGST + SGST (same state)"}</span>{" "}
-              — based on your company state vs the client's state in Accounts.
+              — based on your company state vs the client's state in Customers.
             </p>
           </div>
         </div>
@@ -266,94 +266,111 @@ export default function EditQuotePage() {
 
       <div className="card p-5 space-y-4">
         <h2 className="font-semibold">Line Items</h2>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {items.map((item, idx) => (
-            <div key={idx} className="grid grid-cols-12 gap-2 items-end border-b border-gray-100 pb-3">
-              <div className="col-span-2">
-                <label className="label">Product</label>
-                <div className="flex items-center gap-2">
-                  {item.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={item.image_url}
-                      alt=""
-                      className="h-9 w-9 rounded-md object-cover border border-gray-200 shrink-0"
-                    />
-                  ) : (
-                    <div className="h-9 w-9 rounded-md border border-dashed border-gray-200 shrink-0" />
-                  )}
-                  <select
+            <div key={idx} className="rounded-xl border border-gray-200 p-4 space-y-4">
+              <div className="flex items-start justify-between gap-3">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide pt-2">
+                  Item {idx + 1}
+                </span>
+                <button className="text-red-600 text-sm shrink-0" onClick={() => removeItem(idx)}>
+                  Remove
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Product</label>
+                  <div className="flex items-center gap-2">
+                    {item.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.image_url}
+                        alt=""
+                        className="h-10 w-10 rounded-md object-cover border border-gray-200 shrink-0"
+                      />
+                    ) : (
+                      <div className="h-10 w-10 rounded-md border border-dashed border-gray-200 shrink-0" />
+                    )}
+                    <select
+                      className="input flex-1"
+                      value={item.product_id || ""}
+                      onChange={(e) => pickProduct(idx, e.target.value)}
+                    >
+                      <option value="">Custom item</option>
+                      {products.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="label">HSN/SAC</label>
+                  <input
                     className="input"
-                    value={item.product_id || ""}
-                    onChange={(e) => pickProduct(idx, e.target.value)}
-                  >
-                    <option value="">Custom item</option>
-                    {products.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
+                    value={item.hsn_sac || ""}
+                    onChange={(e) => updateItem(idx, { hsn_sac: e.target.value })}
+                  />
                 </div>
               </div>
-              <div className="col-span-3">
+
+              <div>
                 <label className="label">Description</label>
                 <textarea
                   className="input"
-                  rows={1}
+                  rows={2}
                   value={item.description}
                   onChange={(e) => updateItem(idx, { description: e.target.value })}
                 />
+              </div>
+
+              <div>
+                <label className="label">Product Detail (optional)</label>
                 <textarea
-                  className="input mt-1 text-xs"
-                  rows={1}
-                  placeholder="Product detail shown under the item on the quotation (optional)"
+                  className="input"
+                  rows={2}
+                  placeholder="Shown under the item on the quotation"
                   value={item.product_description || ""}
                   onChange={(e) => updateItem(idx, { product_description: e.target.value })}
                 />
               </div>
-              <div className="col-span-1">
-                <label className="label">HSN/SAC</label>
-                <input
-                  className="input"
-                  value={item.hsn_sac || ""}
-                  onChange={(e) => updateItem(idx, { hsn_sac: e.target.value })}
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="label">Qty</label>
-                <input
-                  type="number"
-                  className="input"
-                  value={item.quantity}
-                  onChange={(e) => updateItem(idx, { quantity: Number(e.target.value) })}
-                />
-              </div>
-              <div className="col-span-2">
-                <label className="label">Unit Price</label>
-                <input
-                  type="number"
-                  className="input"
-                  value={item.unit_price}
-                  onChange={(e) => updateItem(idx, { unit_price: Number(e.target.value) })}
-                />
-              </div>
-              <div className="col-span-1">
-                <label className="label">Tax %</label>
-                <input
-                  type="number"
-                  className="input"
-                  value={item.tax_rate}
-                  onChange={(e) => updateItem(idx, { tax_rate: Number(e.target.value) })}
-                />
-              </div>
-              <div className="col-span-1 text-sm font-medium pb-2">
-                ₹{item.line_total.toLocaleString("en-IN")}
-              </div>
-              <div className="col-span-1 pb-2">
-                <button className="text-red-600 text-sm" onClick={() => removeItem(idx)}>
-                  Remove
-                </button>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
+                <div>
+                  <label className="label">Qty</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={item.quantity}
+                    onChange={(e) => updateItem(idx, { quantity: Number(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <label className="label">Unit Price</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={item.unit_price}
+                    onChange={(e) => updateItem(idx, { unit_price: Number(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <label className="label">Tax %</label>
+                  <input
+                    type="number"
+                    className="input"
+                    value={item.tax_rate}
+                    onChange={(e) => updateItem(idx, { tax_rate: Number(e.target.value) })}
+                  />
+                </div>
+                <div>
+                  <label className="label">Amount</label>
+                  <div className="input flex items-center bg-gray-50 font-medium">
+                    ₹{item.line_total.toLocaleString("en-IN")}
+                  </div>
+                </div>
               </div>
             </div>
           ))}

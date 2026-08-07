@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import QuoteDocument from "@/components/QuoteDocument";
+import QuoteItemPhotos from "@/components/QuoteItemPhotos";
 import StatusSelect from "@/components/StatusSelect";
 
 const statusColors: Record<string, string> = {
@@ -19,6 +20,7 @@ export default function QuoteDetailPage() {
   const router = useRouter();
   const supabase = createClient();
   const printRef = useRef<HTMLDivElement>(null);
+  const photosRef = useRef<HTMLDivElement>(null);
 
   const [quote, setQuote] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
@@ -61,12 +63,39 @@ export default function QuoteDetailPage() {
     if (!printRef.current) return;
     const html2canvas = (await import("html2canvas")).default;
     const { jsPDF } = await import("jspdf");
-    const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, allowTaint: false });
-    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const imgHeight = (canvas.height * pageWidth) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pageWidth, imgHeight);
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    // Renders a canvas across as many PDF pages as it needs, slicing at page-height boundaries.
+    const addCanvasAsPages = (canvas: HTMLCanvasElement, startNewPage: boolean) => {
+      const imgData = canvas.toDataURL("image/png");
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      if (startNewPage) pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+    };
+
+    const docCanvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, allowTaint: false });
+    addCanvasAsPages(docCanvas, false);
+
+    // Product photos always start on a fresh page (page 2 onward), full size.
+    if (photosRef.current && photosRef.current.innerHTML.trim() !== "") {
+      const photosCanvas = await html2canvas(photosRef.current, { scale: 2, useCORS: true, allowTaint: false });
+      addCanvasAsPages(photosCanvas, true);
+    }
+
     pdf.save(`${quote.quote_number}.pdf`);
   };
 
@@ -195,6 +224,9 @@ export default function QuoteDetailPage() {
 
       <div ref={printRef}>
         <QuoteDocument quote={quote} items={items} account={account} contact={contact} company={company} />
+      </div>
+      <div ref={photosRef}>
+        <QuoteItemPhotos items={items} />
       </div>
     </div>
   );

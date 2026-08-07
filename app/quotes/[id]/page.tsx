@@ -164,6 +164,9 @@ export default function QuoteDetailPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{quote.quote_number}</h1>
         <div className="flex gap-2">
+          <button className="btn-secondary" onClick={() => router.push(`/quotes/${id}/edit`)}>
+            Edit
+          </button>
           <button className="btn-secondary" onClick={downloadPdf} disabled={downloading}>
             {downloading ? "Generating..." : "Download PDF"}
           </button>

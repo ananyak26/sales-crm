@@ -224,7 +224,7 @@ export default function Topbar() {
               {!searching && results.accounts.length > 0 && (
                 <div className="mb-1">
                   <div className="px-4 py-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
-                    Accounts
+                    Customers
                   </div>
                   {results.accounts.map((a) => (
                     <button

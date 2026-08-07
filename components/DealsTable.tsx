@@ -26,7 +26,7 @@ export default function DealsTable({ deals, showOwner = false }: { deals: Deal[]
         <thead>
           <tr>
             <th>Deal</th>
-            <th>Account</th>
+            <th>Customer</th>
             {showOwner && <th>Owner</th>}
             <th>Stage</th>
             <th>Amount</th>

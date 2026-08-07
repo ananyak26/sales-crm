@@ -21,7 +21,7 @@ import {
 const salesLinks = [
   { href: "/", label: "Dashboard", icon: LayoutGrid },
   { href: "/deals", label: "Deals", icon: Handshake },
-  { href: "/accounts", label: "Accounts", icon: Building2 },
+  { href: "/accounts", label: "Customers", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },
   { href: "/quotes", label: "Quotes", icon: FileText },
   { href: "/invoices", label: "Sales Order", icon: Receipt },
@@ -30,7 +30,7 @@ const salesLinks = [
 const bossLinks = [
   { href: "/", label: "Dashboard", icon: LayoutGrid },
   { href: "/reports", label: "Reports", icon: BarChart3 },
-  { href: "/accounts", label: "Accounts", icon: Building2 },
+  { href: "/accounts", label: "Customers", icon: Building2 },
   { href: "/products", label: "Products", icon: Package },
   { href: "/quotes", label: "Quotes", icon: FileText },
   { href: "/invoices", label: "Sales Order", icon: Receipt },

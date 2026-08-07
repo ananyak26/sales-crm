@@ -126,7 +126,7 @@ export default function DashboardCharts({
         </div>
 
         <div className="card p-5 lg:col-span-2">
-          <h2 className="font-semibold text-ink-900 mb-0.5">Top Accounts</h2>
+          <h2 className="font-semibold text-ink-900 mb-0.5">Top Customers</h2>
           <p className="text-xs text-gray-400 mb-5">By open pipeline value</p>
           <div className="space-y-3.5">
             {topAccounts.length === 0 && <p className="text-sm text-gray-400">No open pipeline yet.</p>}

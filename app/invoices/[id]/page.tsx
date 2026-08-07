@@ -96,9 +96,13 @@ export default function InvoiceDetailPage() {
     const totalPages = pdf.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i);
+      // Simple neat border frame around each page
+      pdf.setDrawColor(28, 28, 28);
+      pdf.setLineWidth(0.4);
+      pdf.rect(6, 6, pageWidth - 12, pageHeight - 12);
       pdf.setFontSize(9);
       pdf.setTextColor(120, 120, 120);
-      pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 6, { align: "center" });
+      pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 3.5, { align: "center" });
     }
 
     pdf.save(`${invoice.invoice_number}.pdf`);

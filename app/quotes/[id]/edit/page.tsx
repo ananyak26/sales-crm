@@ -212,17 +212,6 @@ export default function EditQuotePage() {
             </select>
           </div>
           <div>
-            <label className="label">Contact</label>
-            <select className="input" value={contactId} onChange={(e) => setContactId(e.target.value)}>
-              <option value="">—</option>
-              {contacts.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
             <label className="label">Related Deal</label>
             <select className="input" value={dealId} onChange={(e) => setDealId(e.target.value)}>
               <option value="">—</option>

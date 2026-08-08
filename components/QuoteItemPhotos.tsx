@@ -20,7 +20,6 @@ export default function QuoteItemPhotos({
         <div
           className="bg-gray-100 rounded-2xl overflow-hidden shadow-premium mt-6 flex flex-col"
           style={{
-            minHeight: "1000px",
             breakBefore: "page",
             pageBreakBefore: "always",
             border: `1px solid ${CHARCOAL}`,

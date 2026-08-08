@@ -67,23 +67,34 @@ export default function QuoteDetailPage() {
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    // Renders a canvas across as many PDF pages as it needs, slicing at page-height boundaries.
+    // Content sits inset from the page edge so it never collides with the footer/border.
+    const margin = 8;
+    const usableWidth = pageWidth - margin * 2;
+    const usableHeightPerPage = pageHeight - margin * 2 - 6; // leaves room for the footer text
+
+    // Slices a tall canvas into page-sized chunks (only creating as many pages as the
+    // content actually needs) and places each chunk inside the page margin.
     const addCanvasAsPages = (canvas: HTMLCanvasElement, startNewPage: boolean) => {
-      const imgData = canvas.toDataURL("image/png");
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
+      const pxPerMM = canvas.width / usableWidth; // source pixels per mm once scaled to usableWidth
+      const pageHeightPx = usableHeightPerPage * pxPerMM;
 
-      if (startNewPage) pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      let renderedPx = 0;
+      let first = true;
+      while (renderedPx < canvas.height) {
+        if (startNewPage || !first) pdf.addPage();
+        first = false;
 
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        const sliceHeightPx = Math.min(pageHeightPx, canvas.height - renderedPx);
+        const sliceCanvas = document.createElement("canvas");
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = sliceHeightPx;
+        const ctx = sliceCanvas.getContext("2d")!;
+        ctx.drawImage(canvas, 0, renderedPx, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+
+        const sliceHeightMM = sliceHeightPx / pxPerMM;
+        pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", margin, margin, usableWidth, sliceHeightMM);
+
+        renderedPx += sliceHeightPx;
       }
     };
 
@@ -99,13 +110,9 @@ export default function QuoteDetailPage() {
     const totalPages = pdf.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i);
-      // Simple neat border frame around each page
-      pdf.setDrawColor(28, 28, 28);
-      pdf.setLineWidth(0.4);
-      pdf.rect(6, 6, pageWidth - 12, pageHeight - 12);
       pdf.setFontSize(9);
-      pdf.setTextColor(120, 120, 120);
-      pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 3.5, { align: "center" });
+      pdf.setTextColor(150, 150, 150);
+      pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 4, { align: "center" });
     }
 
     pdf.save(`${quote.quote_number}.pdf`);

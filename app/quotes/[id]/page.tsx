@@ -238,7 +238,7 @@ export default function QuoteDetailPage() {
         <QuoteDocument quote={quote} items={items} account={account} contact={contact} company={company} />
       </div>
       <div ref={photosRef}>
-        <QuoteItemPhotos items={items} terms={quote.terms} />
+        <QuoteItemPhotos items={items} terms={quote.terms} showPhotos={false} />
       </div>
     </div>
   );

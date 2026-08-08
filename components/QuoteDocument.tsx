@@ -98,7 +98,7 @@ export default function QuoteDocument({
 
         {/* Bill To / Ship To / Details */}
         <div className="grid grid-cols-3 gap-px bg-gray-200 text-xs border-b" style={{ borderColor: "#e5e5e5" }}>
-          <div className="bg-white p-4">
+          <div className="bg-gray-100 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Billed To
             </p>
@@ -107,7 +107,7 @@ export default function QuoteDocument({
             {contact && <p className="text-gray-600 mt-1">Attn: {contact.name}</p>}
             {account?.gstin && <p className="text-gray-600 mt-1">GSTIN {account.gstin}</p>}
           </div>
-          <div className="bg-white p-4">
+          <div className="bg-gray-100 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Shipped To
             </p>
@@ -115,7 +115,7 @@ export default function QuoteDocument({
               {account?.shipping_address || account?.billing_address}
             </p>
           </div>
-          <div className="bg-white p-4">
+          <div className="bg-gray-100 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Details
             </p>
@@ -131,7 +131,7 @@ export default function QuoteDocument({
 
         {/* Subject */}
         {quote.subject && (
-          <div className="px-6 py-3 border-b border-gray-200 bg-white text-xs">
+          <div className="px-6 py-3 border-b border-gray-200 bg-gray-100 text-xs">
             <span className="font-bold uppercase tracking-wide text-[10px]" style={{ color: ORANGE_DEEP }}>
               Subject
             </span>
@@ -159,7 +159,7 @@ export default function QuoteDocument({
               <th className="p-2 pr-6 text-right font-bold border border-gray-700">Amount</th>
             </tr>
             {isSplitTax && (
-              <tr className="bg-gray-50 text-gray-600 text-[10px]">
+              <tr className="bg-gray-100 text-gray-600 text-[10px]">
                 <th className="p-1 border border-gray-300" colSpan={5}></th>
                 <th className="p-1 text-right font-medium border border-gray-300">%</th>
                 <th className="p-1 text-right font-medium border border-gray-300">Amt</th>
@@ -174,7 +174,7 @@ export default function QuoteDocument({
               const lineAmount = Number(it.quantity) * Number(it.unit_price);
               const taxAmt = (lineAmount * Number(it.tax_rate)) / 100;
               return (
-                <tr key={it.id || idx} className={idx % 2 === 1 ? "bg-orange-50/30" : "bg-white"}>
+                <tr key={it.id || idx} className={idx % 2 === 1 ? "bg-orange-50/30" : "bg-gray-100"}>
                   <td className="p-2 pl-6 align-top border border-gray-200 text-gray-700 font-medium">
                     {idx + 1}
                   </td>

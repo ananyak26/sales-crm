@@ -18,7 +18,7 @@ export default function QuoteItemPhotos({
     <div className="text-gray-800" style={{ fontFamily: "Cambria, Georgia, 'Times New Roman', serif" }}>
       {terms && (
         <div
-          className="bg-white rounded-2xl overflow-hidden shadow-premium mt-6 flex flex-col"
+          className="bg-gray-100 rounded-2xl overflow-hidden shadow-premium mt-6 flex flex-col"
           style={{
             minHeight: "1000px",
             breakBefore: "page",

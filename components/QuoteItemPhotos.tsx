@@ -2,8 +2,16 @@ const CHARCOAL = "#1c1c1c";
 const ORANGE = "#f5a524";
 const ORANGE_DEEP = "#d9720c";
 
-export default function QuoteItemPhotos({ items, terms }: { items: any[]; terms?: string | null }) {
-  const withPhotos = items.filter((it) => it.image_url);
+export default function QuoteItemPhotos({
+  items,
+  terms,
+  showPhotos = true,
+}: {
+  items: any[];
+  terms?: string | null;
+  showPhotos?: boolean;
+}) {
+  const withPhotos = showPhotos ? items.filter((it) => it.image_url) : [];
   if (withPhotos.length === 0 && !terms) return null;
 
   return (

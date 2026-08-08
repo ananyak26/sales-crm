@@ -256,6 +256,15 @@ export default function QuoteDocument({
                 <span className="font-medium text-gray-800">-{inr(quote.discount)}</span>
               </div>
             )}
+            {Number(quote.adjustment || 0) !== 0 && (
+              <div className="flex justify-between py-1 text-gray-600">
+                <span>Adjustment</span>
+                <span className="font-medium text-gray-800">
+                  {Number(quote.adjustment) > 0 ? "" : "-"}
+                  {inr(Math.abs(Number(quote.adjustment)))}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between py-1 text-gray-600">
               <span>{isSplitTax ? "CGST + SGST" : "IGST"}</span>
               <span className="font-medium text-gray-800">{inr(quote.tax_total)}</span>
@@ -265,7 +274,7 @@ export default function QuoteDocument({
               style={{ background: `linear-gradient(90deg, ${ORANGE_DEEP} 0%, ${ORANGE} 100%)` }}
             >
               <span className="font-semibold uppercase text-[10px] tracking-widest text-white">
-                Total Due
+                {docLabel === "Quote" ? "Subtotal" : "Total Due"}
               </span>
               <span className="font-bold text-lg text-white">₹{inr(quote.grand_total)}</span>
             </div>

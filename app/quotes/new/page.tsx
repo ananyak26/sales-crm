@@ -262,30 +262,18 @@ export default function NewQuotePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="label">Product</label>
-                  <div className="flex items-center gap-2">
-                    {item.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={item.image_url}
-                        alt=""
-                        className="h-10 w-10 rounded-md object-cover border border-gray-200 shrink-0"
-                      />
-                    ) : (
-                      <div className="h-10 w-10 rounded-md border border-dashed border-gray-200 shrink-0" />
-                    )}
-                    <select
-                      className="input flex-1"
-                      value={item.product_id || ""}
-                      onChange={(e) => pickProduct(idx, e.target.value)}
-                    >
-                      <option value="">Custom item</option>
-                      {products.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <select
+                    className="input"
+                    value={item.product_id || ""}
+                    onChange={(e) => pickProduct(idx, e.target.value)}
+                  >
+                    <option value="">Custom item</option>
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="label">HSN/SAC</label>

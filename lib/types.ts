@@ -89,6 +89,7 @@ export type Quote = {
   status: "Draft" | "Sent" | "Accepted" | "Rejected";
   subtotal: number;
   discount: number;
+  adjustment: number;
   tax_total: number;
   grand_total: number;
   valid_until: string | null;

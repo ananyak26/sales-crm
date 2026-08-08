@@ -35,6 +35,7 @@ export default function NewQuotePage() {
   const [placeOfSupply, setPlaceOfSupply] = useState("");
   const [notes, setNotes] = useState("Looking forward for your business.");
   const [discount, setDiscount] = useState(0);
+  const [adjustment, setAdjustment] = useState(0);
   const [terms, setTerms] = useState(
     "Payment due within 30 days of acceptance. Prices valid until the date above."
   );
@@ -95,7 +96,6 @@ export default function NewQuotePage() {
       product_id: p.id,
       description: p.name,
       product_description: p.description || "",
-      image_url: p.image_url || null,
       unit_price: Number(p.price),
       tax_rate: Number(p.tax_rate),
       hsn_sac: p.hsn_sac || "",
@@ -111,7 +111,7 @@ export default function NewQuotePage() {
     (s, i) => s + (Number(i.quantity) * Number(i.unit_price) * Number(i.tax_rate)) / 100,
     0
   );
-  const grandTotal = subtotal - Number(discount) + taxTotal;
+  const grandTotal = subtotal - Number(discount) + taxTotal + Number(adjustment);
 
   const save = async () => {
     if (!accountId) {
@@ -146,6 +146,7 @@ export default function NewQuotePage() {
         status: "Draft",
         subtotal,
         discount: Number(discount),
+        adjustment: Number(adjustment),
         tax_total: taxTotal,
         grand_total: grandTotal,
         valid_until: validUntil || null,
@@ -172,7 +173,6 @@ export default function NewQuotePage() {
         product_id: i.product_id,
         description: i.description,
         product_description: i.product_description || null,
-        image_url: i.image_url || null,
         hsn_sac: i.hsn_sac || null,
         unit: i.unit || "Nos",
         quantity: i.quantity,
@@ -373,6 +373,15 @@ export default function NewQuotePage() {
                 className="input w-24 text-right"
                 value={discount}
                 onChange={(e) => setDiscount(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex justify-between text-sm items-center">
+              <span>Adjustment</span>
+              <input
+                type="number"
+                className="input w-24 text-right"
+                value={adjustment}
+                onChange={(e) => setAdjustment(Number(e.target.value))}
               />
             </div>
             <div className="flex justify-between text-sm">

@@ -36,6 +36,7 @@ export default function EditQuotePage() {
   const [placeOfSupply, setPlaceOfSupply] = useState("");
   const [notes, setNotes] = useState("");
   const [discount, setDiscount] = useState(0);
+  const [adjustment, setAdjustment] = useState(0);
   const [terms, setTerms] = useState("");
   const [items, setItems] = useState<QuoteItem[]>([blankItem()]);
   const [saving, setSaving] = useState(false);
@@ -67,6 +68,7 @@ export default function EditQuotePage() {
         setPlaceOfSupply(quote.place_of_supply || "");
         setNotes(quote.notes || "");
         setDiscount(Number(quote.discount) || 0);
+        setAdjustment(Number(quote.adjustment) || 0);
         setTerms(quote.terms || "");
       }
 
@@ -115,7 +117,6 @@ export default function EditQuotePage() {
       product_id: p.id,
       description: p.name,
       product_description: p.description || "",
-      image_url: p.image_url || null,
       unit_price: Number(p.price),
       tax_rate: Number(p.tax_rate),
       hsn_sac: p.hsn_sac || "",
@@ -131,7 +132,7 @@ export default function EditQuotePage() {
     (s, i) => s + (Number(i.quantity) * Number(i.unit_price) * Number(i.tax_rate)) / 100,
     0
   );
-  const grandTotal = subtotal - Number(discount) + taxTotal;
+  const grandTotal = subtotal - Number(discount) + taxTotal + Number(adjustment);
 
   const save = async () => {
     if (!accountId) {
@@ -153,6 +154,7 @@ export default function EditQuotePage() {
         deal_id: dealId || null,
         subtotal,
         discount: Number(discount),
+        adjustment: Number(adjustment),
         tax_total: taxTotal,
         grand_total: grandTotal,
         valid_until: validUntil || null,
@@ -178,7 +180,6 @@ export default function EditQuotePage() {
       product_id: i.product_id,
       description: i.description,
       product_description: i.product_description || null,
-      image_url: i.image_url || null,
       hsn_sac: i.hsn_sac || null,
       unit: i.unit || "Nos",
       quantity: i.quantity,
@@ -381,6 +382,15 @@ export default function EditQuotePage() {
                 className="input w-24 text-right"
                 value={discount}
                 onChange={(e) => setDiscount(Number(e.target.value))}
+              />
+            </div>
+            <div className="flex justify-between text-sm items-center">
+              <span>Adjustment</span>
+              <input
+                type="number"
+                className="input w-24 text-right"
+                value={adjustment}
+                onChange={(e) => setAdjustment(Number(e.target.value))}
               />
             </div>
             <div className="flex justify-between text-sm">

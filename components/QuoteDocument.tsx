@@ -43,6 +43,7 @@ export default function QuoteDocument({
       >
         {/* Header band */}
         <div
+          data-pdf-block
           className="relative text-white px-8 pt-6 pb-7 overflow-hidden"
           style={{ background: `linear-gradient(135deg, ${CHARCOAL} 0%, ${CHARCOAL_SOFT} 100%)` }}
         >
@@ -97,7 +98,7 @@ export default function QuoteDocument({
         />
 
         {/* Bill To / Ship To / Details */}
-        <div className="grid grid-cols-3 gap-px bg-gray-200 text-xs border-b" style={{ borderColor: "#e5e5e5" }}>
+        <div data-pdf-block className="grid grid-cols-3 gap-px bg-gray-200 text-xs border-b" style={{ borderColor: "#e5e5e5" }}>
           <div className="bg-gray-100 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Billed To
@@ -131,7 +132,7 @@ export default function QuoteDocument({
 
         {/* Subject */}
         {quote.subject && (
-          <div className="px-6 py-3 border-b border-gray-200 bg-gray-100 text-xs">
+          <div data-pdf-block className="px-6 py-3 border-b border-gray-200 bg-gray-100 text-xs">
             <span className="font-bold uppercase tracking-wide text-[10px]" style={{ color: ORANGE_DEEP }}>
               Subject
             </span>
@@ -228,7 +229,7 @@ export default function QuoteDocument({
         </table>
 
         {/* Totals + words */}
-        <div className="grid grid-cols-2 border-t border-gray-200">
+        <div data-pdf-block className="grid grid-cols-2 border-t border-gray-200">
           <div className="p-5 text-xs border-r border-gray-200">
             <div className="bg-orange-50/40 rounded-xl p-3" style={{ border: `1px solid ${ORANGE}55` }}>
               <p className="font-bold uppercase text-[10px] tracking-widest" style={{ color: ORANGE_DEEP }}>
@@ -282,7 +283,7 @@ export default function QuoteDocument({
         </div>
 
         {/* Bank + signature */}
-        <div className="grid grid-cols-2 border-t border-gray-200 text-xs">
+        <div data-pdf-block className="grid grid-cols-2 border-t border-gray-200 text-xs">
           <div className="p-5 border-r border-gray-200">
             {company?.bank_account_name && (
               <>
@@ -304,7 +305,7 @@ export default function QuoteDocument({
         </div>
 
         {/* Footer accent strip */}
-        <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${ORANGE} 0%, ${ORANGE_DEEP} 50%, ${ORANGE} 100%)` }} />
+        <div data-pdf-block className="h-1.5" style={{ background: `linear-gradient(90deg, ${ORANGE} 0%, ${ORANGE_DEEP} 50%, ${ORANGE} 100%)` }} />
       </div>
     </div>
   );

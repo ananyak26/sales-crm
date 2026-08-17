@@ -38,7 +38,7 @@ export default function QuoteDocument({
   return (
     <div className="bg-gray-100 text-gray-800 text-xs" style={{ fontFamily: "Cambria, Georgia, 'Times New Roman', serif" }}>
       <div
-        className="rounded-2xl overflow-hidden shadow-premium"
+        className="overflow-hidden shadow-premium"
         style={{ border: `1px solid ${CHARCOAL}`, boxShadow: "0 0 0 1px rgba(0,0,0,0.04)" }}
       >
         {/* Header band */}
@@ -54,7 +54,7 @@ export default function QuoteDocument({
                 src={company?.logo_url || "/kaizen-logo.png"}
                 alt="logo"
                 crossOrigin="anonymous"
-                className="h-14 w-auto max-w-[160px] object-contain shrink-0 bg-white rounded-md p-1"
+                className="h-14 w-auto max-w-[160px] object-contain shrink-0 bg-white p-1"
               />
               <div>
                 <p className="text-lg font-bold tracking-tight text-white">{company?.company_name || "Your Company Name"}</p>
@@ -140,7 +140,10 @@ export default function QuoteDocument({
           </div>
         )}
 
-        {/* Line items */}
+        {/* Line items — wrapped as a single data-pdf-block so the whole table
+            (header row + all items) moves together as one unit if it doesn't
+            fit on the first page, instead of being cut mid-row. */}
+        <div data-pdf-block>
         <table className="w-full text-xs border-collapse">
           <thead>
             <tr className="text-white" style={{ background: CHARCOAL }}>
@@ -227,11 +230,12 @@ export default function QuoteDocument({
             })}
           </tbody>
         </table>
+        </div>
 
         {/* Totals + words */}
         <div data-pdf-block className="grid grid-cols-2 border-t border-gray-200">
           <div className="p-5 text-xs border-r border-gray-200">
-            <div className="bg-orange-50/40 rounded-xl p-3" style={{ border: `1px solid ${ORANGE}55` }}>
+            <div className="bg-orange-50/40 p-3" style={{ border: `1px solid ${ORANGE}55` }}>
               <p className="font-bold uppercase text-[10px] tracking-widest" style={{ color: ORANGE_DEEP }}>
                 Total In Words
               </p>
@@ -271,7 +275,7 @@ export default function QuoteDocument({
               <span className="font-medium text-gray-800">{inr(quote.tax_total)}</span>
             </div>
             <div
-              className="mt-2.5 flex justify-between items-center text-white rounded-xl px-4 py-3 shadow-soft"
+              className="mt-2.5 flex justify-between items-center text-white px-4 py-3 shadow-soft"
               style={{ background: `linear-gradient(90deg, ${ORANGE_DEEP} 0%, ${ORANGE} 100%)` }}
             >
               <span className="font-semibold uppercase text-[10px] tracking-widest text-white">

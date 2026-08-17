@@ -72,18 +72,14 @@ export default function QuoteDetailPage() {
     const usableWidth = pageWidth - margin * 2;
     const usableHeightPerPage = pageHeight - margin * 2 - 6; // leaves room for the footer text
 
-    // Walks a live DOM container and records every "safe to cut here" offset (in CSS
-    // pixels relative to the container's top): the top/bottom of every table row, plus
-    // the top/bottom of any element explicitly tagged data-pdf-block. Used so a page
-    // break never lands in the middle of a box, row, or section.
+    // Walks the live document and records the top/bottom (in CSS px, relative to the
+    // container) of every element tagged data-pdf-block — header, bill-to/ship-to,
+    // subject, the whole item table, totals, bank+signature, footer strip. These are
+    // the only places a page break is allowed to land, so a break never cuts a
+    // section in half — it always keeps a whole block together.
     const collectBreakPoints = (container: HTMLElement) => {
       const top = container.getBoundingClientRect().top;
       const points = new Set<number>([0, container.scrollHeight]);
-      container.querySelectorAll("tr").forEach((el) => {
-        const r = el.getBoundingClientRect();
-        points.add(r.top - top);
-        points.add(r.bottom - top);
-      });
       container.querySelectorAll("[data-pdf-block]").forEach((el) => {
         const r = (el as HTMLElement).getBoundingClientRect();
         points.add(r.top - top);
@@ -92,71 +88,67 @@ export default function QuoteDetailPage() {
       return Array.from(points).sort((a, b) => a - b);
     };
 
-    // Slices a tall canvas into page-sized chunks (only creating as many pages as the
-    // content actually needs) and places each chunk inside the page margin. If
-    // breakPointsPx is given, each cut snaps back to the nearest safe break point
-    // instead of a raw pixel count, so it never slices through content.
-    const addCanvasAsPages = (canvas: HTMLCanvasElement, startNewPage: boolean, breakPointsPx?: number[]) => {
-      const pxPerMM = canvas.width / usableWidth; // source pixels per mm once scaled to usableWidth
-      const pageHeightPx = usableHeightPerPage * pxPerMM;
-
-      let renderedPx = 0;
-      let first = true;
-      while (renderedPx < canvas.height - 1) {
-        if (startNewPage || !first) pdf.addPage();
-        first = false;
-
-        let targetPx = Math.min(renderedPx + pageHeightPx, canvas.height);
-        if (breakPointsPx && targetPx < canvas.height) {
-          const safe = [...breakPointsPx].reverse().find((p) => p > renderedPx + 1 && p <= targetPx);
-          if (safe) targetPx = safe;
-        }
-
-        const sliceHeightPx = Math.max(1, targetPx - renderedPx);
-        const sliceCanvas = document.createElement("canvas");
-        sliceCanvas.width = canvas.width;
-        sliceCanvas.height = sliceHeightPx;
-        const ctx = sliceCanvas.getContext("2d")!;
-        ctx.drawImage(canvas, 0, renderedPx, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
-
-        const sliceHeightMM = sliceHeightPx / pxPerMM;
-        pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", margin, margin, usableWidth, sliceHeightMM);
-
-        renderedPx += sliceHeightPx;
-      }
-    };
-
-    // Renders one captured section (the main document, or the terms/photos block) onto
-    // the PDF. If it's only a little taller than a single page, it's scaled down to fit
-    // on one clean page instead of spilling a small sliver onto an extra page. Only
-    // genuinely long content (e.g. many line items) falls back to real pagination, and
-    // even then only cuts at safe break points.
-    const renderSection = (canvas: HTMLCanvasElement, container: HTMLElement, startNewPage: boolean) => {
-      const pxPerMM = canvas.width / usableWidth;
-      const contentHeightMM = canvas.height / pxPerMM;
-
-      if (startNewPage) pdf.addPage();
-
-      if (contentHeightMM <= usableHeightPerPage * 1.35) {
-        const scale = Math.min(1, usableHeightPerPage / contentHeightMM);
-        const fitWidthMM = usableWidth * scale;
-        const fitHeightMM = contentHeightMM * scale;
-        const xOffset = margin + (usableWidth - fitWidthMM) / 2;
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", xOffset, margin, fitWidthMM, fitHeightMM);
-      } else {
-        const pxRatio = canvas.width / container.getBoundingClientRect().width;
-        const breakPointsPx = collectBreakPoints(container).map((p) => p * pxRatio);
-        addCanvasAsPages(canvas, false, breakPointsPx);
-      }
+    // Draws a horizontal slice of a canvas (sliceTopPx..sliceTopPx+sliceHeightPx) onto
+    // the PDF at natural (unscaled) size and returns how tall it ended up, in mm.
+    const drawSlice = (
+      canvas: HTMLCanvasElement,
+      sliceTopPx: number,
+      sliceHeightPx: number,
+      x: number,
+      y: number,
+      pxPerMM: number
+    ) => {
+      const sliceCanvas = document.createElement("canvas");
+      sliceCanvas.width = canvas.width;
+      sliceCanvas.height = sliceHeightPx;
+      const ctx = sliceCanvas.getContext("2d")!;
+      ctx.drawImage(canvas, 0, sliceTopPx, canvas.width, sliceHeightPx, 0, 0, canvas.width, sliceHeightPx);
+      const sliceHeightMM = sliceHeightPx / pxPerMM;
+      pdf.addImage(sliceCanvas.toDataURL("image/png"), "PNG", x, y, usableWidth, sliceHeightMM);
+      return sliceHeightMM;
     };
 
     const docCanvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, allowTaint: false });
-    renderSection(docCanvas, printRef.current, false);
+    const pxPerMM = docCanvas.width / usableWidth; // canvas px per mm at the page's width
+    const pageHeightPx = usableHeightPerPage * pxPerMM;
 
-    // Terms (and product photos, if any) always start on a fresh page.
-    if (photosRef.current && photosRef.current.innerHTML.trim() !== "") {
-      const photosCanvas = await html2canvas(photosRef.current, { scale: 2, useCORS: true, allowTaint: false });
-      renderSection(photosCanvas, photosRef.current, true);
+    const pxRatio = docCanvas.width / printRef.current.getBoundingClientRect().width;
+    const breakPointsPx = collectBreakPoints(printRef.current).map((p) => p * pxRatio);
+
+    // Find the last safe break point that still fits within one page. Everything up
+    // to that point stays on page 1; everything after it (a whole section, e.g. bank
+    // details) shifts to page 2 along with Terms & Conditions.
+    let splitPx = 0;
+    for (const p of breakPointsPx) {
+      if (p <= pageHeightPx) splitPx = p;
+      else break;
+    }
+    if (splitPx <= 0) splitPx = Math.min(pageHeightPx, docCanvas.height); // safety fallback
+
+    // Page 1: everything that fits, drawn at its natural size (no shrinking).
+    drawSlice(docCanvas, 0, splitPx, margin, margin, pxPerMM);
+
+    const hasOverflow = splitPx < docCanvas.height - 1;
+    const hasTerms = photosRef.current && photosRef.current.innerHTML.trim() !== "";
+
+    // Page 2 (only added if there's something for it): any leftover main-document
+    // section, followed immediately by Terms & Conditions — keeping the whole PDF to
+    // exactly two pages.
+    if (hasOverflow || hasTerms) {
+      pdf.addPage();
+      let cursorY = margin;
+
+      if (hasOverflow) {
+        cursorY += drawSlice(docCanvas, splitPx, docCanvas.height - splitPx, margin, cursorY, pxPerMM);
+        cursorY += 6; // gap before terms
+      }
+
+      if (hasTerms) {
+        const photosCanvas = await html2canvas(photosRef.current!, { scale: 2, useCORS: true, allowTaint: false });
+        const photosPxPerMM = photosCanvas.width / usableWidth;
+        const photosHeightMM = photosCanvas.height / photosPxPerMM;
+        pdf.addImage(photosCanvas.toDataURL("image/png"), "PNG", margin, cursorY, usableWidth, photosHeightMM);
+      }
     }
 
     const totalPages = pdf.getNumberOfPages();

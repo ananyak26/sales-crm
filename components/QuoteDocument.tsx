@@ -36,11 +36,8 @@ export default function QuoteDocument({
   const taxColSpan = isSplitTax ? 4 : 2;
 
   return (
-    <div className="bg-gray-100 text-gray-800 text-xs" style={{ fontFamily: "Cambria, Georgia, 'Times New Roman', serif" }}>
-      <div
-        className="overflow-hidden shadow-premium"
-        style={{ border: `1px solid ${CHARCOAL}`, boxShadow: "0 0 0 1px rgba(0,0,0,0.04)" }}
-      >
+    <div className="bg-sky-50 text-gray-800 text-xs" style={{ fontFamily: "Cambria, Georgia, 'Times New Roman', serif" }}>
+      <div>
         {/* Header band */}
         <div
           data-pdf-block
@@ -98,8 +95,8 @@ export default function QuoteDocument({
         />
 
         {/* Bill To / Ship To / Details */}
-        <div data-pdf-block className="grid grid-cols-3 gap-px bg-gray-200 text-xs border-b" style={{ borderColor: "#e5e5e5" }}>
-          <div className="bg-gray-100 p-4">
+        <div data-pdf-block className="grid grid-cols-3 gap-px bg-sky-200 text-xs border-b" style={{ borderColor: "#bfdbfe" }}>
+          <div className="bg-sky-50 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Billed To
             </p>
@@ -108,7 +105,7 @@ export default function QuoteDocument({
             {contact && <p className="text-gray-600 mt-1">Attn: {contact.name}</p>}
             {account?.gstin && <p className="text-gray-600 mt-1">GSTIN {account.gstin}</p>}
           </div>
-          <div className="bg-gray-100 p-4">
+          <div className="bg-sky-50 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Shipped To
             </p>
@@ -116,7 +113,7 @@ export default function QuoteDocument({
               {account?.shipping_address || account?.billing_address}
             </p>
           </div>
-          <div className="bg-gray-100 p-4">
+          <div className="bg-sky-50 p-4">
             <p className="uppercase text-[10px] tracking-widest font-bold mb-1.5" style={{ color: ORANGE_DEEP }}>
               Details
             </p>
@@ -132,7 +129,7 @@ export default function QuoteDocument({
 
         {/* Subject */}
         {quote.subject && (
-          <div data-pdf-block className="px-6 py-3 border-b border-gray-200 bg-gray-100 text-xs">
+          <div data-pdf-block className="px-6 py-3 border-b border-sky-200 bg-sky-50 text-xs">
             <span className="font-bold uppercase tracking-wide text-[10px]" style={{ color: ORANGE_DEEP }}>
               Subject
             </span>
@@ -163,7 +160,7 @@ export default function QuoteDocument({
               <th className="p-2 pr-6 text-right font-bold border border-gray-700">Amount</th>
             </tr>
             {isSplitTax && (
-              <tr className="bg-gray-100 text-gray-600 text-[10px]">
+              <tr className="bg-sky-100 text-gray-600 text-[10px]">
                 <th className="p-1 border border-gray-300" colSpan={5}></th>
                 <th className="p-1 text-right font-medium border border-gray-300">%</th>
                 <th className="p-1 text-right font-medium border border-gray-300">Amt</th>
@@ -178,11 +175,11 @@ export default function QuoteDocument({
               const lineAmount = Number(it.quantity) * Number(it.unit_price);
               const taxAmt = (lineAmount * Number(it.tax_rate)) / 100;
               return (
-                <tr key={it.id || idx} className={idx % 2 === 1 ? "bg-orange-50/30" : "bg-gray-100"}>
-                  <td className="p-2 pl-6 align-top border border-gray-200 text-gray-700 font-medium">
+                <tr key={it.id || idx} className={idx % 2 === 1 ? "bg-orange-50/30" : "bg-sky-50"}>
+                  <td className="p-2 pl-6 align-top border border-sky-200 text-gray-700 font-medium">
                     {idx + 1}
                   </td>
-                  <td className="p-2 align-top border border-gray-200">
+                  <td className="p-2 align-top border border-sky-200">
                     <p className="font-semibold text-gray-900 whitespace-pre-line">{it.description}</p>
                     {it.product_description && (
                       <p className="text-gray-600 text-[10px] leading-4 mt-0.5 whitespace-pre-line">
@@ -190,39 +187,39 @@ export default function QuoteDocument({
                       </p>
                     )}
                   </td>
-                  <td className="p-2 align-top border border-gray-200 text-gray-800">{it.hsn_sac}</td>
-                  <td className="p-2 align-top border border-gray-200 text-right text-gray-900">
+                  <td className="p-2 align-top border border-sky-200 text-gray-800">{it.hsn_sac}</td>
+                  <td className="p-2 align-top border border-sky-200 text-right text-gray-900">
                     {Number(it.quantity).toFixed(2)}
                   </td>
-                  <td className="p-2 align-top border border-gray-200 text-right text-gray-900">
+                  <td className="p-2 align-top border border-sky-200 text-right text-gray-900">
                     {inr(it.unit_price)}
                   </td>
                   {isSplitTax ? (
                     <>
-                      <td className="p-2 align-top border border-gray-200 text-right text-gray-800">
+                      <td className="p-2 align-top border border-sky-200 text-right text-gray-800">
                         {(Number(it.tax_rate) / 2).toFixed(0)}%
                       </td>
-                      <td className="p-2 align-top border border-gray-200 text-right text-gray-800">
+                      <td className="p-2 align-top border border-sky-200 text-right text-gray-800">
                         {inr(taxAmt / 2)}
                       </td>
-                      <td className="p-2 align-top border border-gray-200 text-right text-gray-800">
+                      <td className="p-2 align-top border border-sky-200 text-right text-gray-800">
                         {(Number(it.tax_rate) / 2).toFixed(0)}%
                       </td>
-                      <td className="p-2 align-top border border-gray-200 text-right text-gray-800">
+                      <td className="p-2 align-top border border-sky-200 text-right text-gray-800">
                         {inr(taxAmt / 2)}
                       </td>
                     </>
                   ) : (
                     <>
-                      <td className="p-2 align-top border border-gray-200 text-right text-gray-800">
+                      <td className="p-2 align-top border border-sky-200 text-right text-gray-800">
                         {Number(it.tax_rate).toFixed(0)}%
                       </td>
-                      <td className="p-2 align-top border border-gray-200 text-right text-gray-800">
+                      <td className="p-2 align-top border border-sky-200 text-right text-gray-800">
                         {inr(taxAmt)}
                       </td>
                     </>
                   )}
-                  <td className="p-2 pr-6 align-top border border-gray-200 text-right font-semibold text-gray-900">
+                  <td className="p-2 pr-6 align-top border border-sky-200 text-right font-semibold text-gray-900">
                     {inr(lineAmount)}
                   </td>
                 </tr>
@@ -233,8 +230,8 @@ export default function QuoteDocument({
         </div>
 
         {/* Totals + words */}
-        <div data-pdf-block className="grid grid-cols-2 border-t border-gray-200">
-          <div className="p-5 text-xs border-r border-gray-200">
+        <div data-pdf-block className="grid grid-cols-2 border-t border-sky-200">
+          <div className="p-5 text-xs border-r border-sky-200">
             <div className="bg-orange-50/40 p-3" style={{ border: `1px solid ${ORANGE}55` }}>
               <p className="font-bold uppercase text-[10px] tracking-widest" style={{ color: ORANGE_DEEP }}>
                 Total In Words
@@ -287,8 +284,8 @@ export default function QuoteDocument({
         </div>
 
         {/* Bank + signature */}
-        <div data-pdf-block className="grid grid-cols-2 border-t border-gray-200 text-xs">
-          <div className="p-5 border-r border-gray-200">
+        <div data-pdf-block className="grid grid-cols-2 border-t border-sky-200 text-xs">
+          <div className="p-5 border-r border-sky-200">
             {company?.bank_account_name && (
               <>
                 <p className="font-bold uppercase text-[10px] tracking-widest mb-1.5" style={{ color: ORANGE_DEEP }}>

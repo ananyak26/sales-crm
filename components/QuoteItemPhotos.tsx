@@ -1,4 +1,3 @@
-const CHARCOAL = "#1c1c1c";
 const ORANGE = "#f5a524";
 const ORANGE_DEEP = "#d9720c";
 
@@ -18,11 +17,10 @@ export default function QuoteItemPhotos({
     <div className="text-gray-800" style={{ fontFamily: "Cambria, Georgia, 'Times New Roman', serif" }}>
       {terms && (
         <div
-          className="bg-gray-100 overflow-hidden shadow-premium mt-6 flex flex-col"
+          className="bg-sky-50 flex flex-col"
           style={{
             breakBefore: "page",
             pageBreakBefore: "always",
-            border: `1px solid ${CHARCOAL}`,
           }}
         >
           <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${ORANGE} 0%, ${ORANGE_DEEP} 50%, ${ORANGE} 100%)` }} />
@@ -39,20 +37,16 @@ export default function QuoteItemPhotos({
       {withPhotos.map((it, idx) => (
         <div
           key={it.id || idx}
-          className="bg-white overflow-hidden shadow-premium mt-6 flex flex-col"
+          className="bg-sky-50 flex flex-col"
           style={{
             minHeight: "1000px",
             breakBefore: "page",
             pageBreakBefore: "always",
-            border: `1px solid ${CHARCOAL}`,
           }}
         >
           <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${ORANGE} 0%, ${ORANGE_DEEP} 50%, ${ORANGE} 100%)` }} />
           <div className="flex-1 flex flex-col items-center justify-center p-10">
-            <div
-              className="p-4 bg-white flex items-center justify-center"
-              style={{ border: `2px solid ${CHARCOAL}`, boxShadow: `0 0 0 4px ${ORANGE}22` }}
-            >
+            <div className="flex items-center justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={it.image_url}
